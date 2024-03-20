@@ -2,15 +2,21 @@
 #include <stdlib.h>
 #include <unistd.h> // Needed for usleep function
 #include <time.h> // Needed for time functions
+#include <math.h>
 #include <png.h>
 
-#define WIDTH 100
-#define HEIGHT 100
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
+#define WIDTH 1000
+#define HEIGHT 1000
 #define MAX_ITERATION 1000
+#define COLOR_CHOICE 9
 
 void calculate_mandelbrot_array(int width, int height, int (*result)[width]);
-int generate_png(int width, int height, int (*array)[width]);
-void map_to_color(int iteration, int *red, int *green, int *blue);
+int generate_png(int width, int height, int (*array)[width], int color_choice);
+void map_to_color(int iteration, int *red, int *green, int *blue, int color_choice);
 
 void calculate_mandelbrot_array(int width, int height, int (*result)[width]) {
 
@@ -54,12 +60,12 @@ void calculate_mandelbrot_array(int width, int height, int (*result)[width]) {
     printf("\n");
 }
 
-int generate_png(int width, int height, int (*array)[width]) {
+int generate_png(int width, int height, int (*array)[width], int color_choice) {
 
     char filename[100]; // Buffer to hold the filename
 
     // Format the filename with height and width
-    snprintf(filename, sizeof(filename), "output_%dx%d.png", WIDTH, HEIGHT);
+    snprintf(filename, sizeof(filename), "output_%dx%d_color-%d.png", WIDTH, HEIGHT, COLOR_CHOICE);
 
     // Open file for writing (binary mode)
     FILE *fp = fopen(filename, "wb");
@@ -118,7 +124,7 @@ int generate_png(int width, int height, int (*array)[width]) {
         for (int x = 0; x < width; x++) {
 
             int red, green, blue;
-            map_to_color(array[y][x], &red, &green, &blue);
+            map_to_color(array[y][x], &red, &green, &blue, color_choice);
 
             int offset = (y * width + x) * 4; // 4 bytes per pixel
             image_data[offset] = red;           // Red
@@ -156,14 +162,86 @@ int generate_png(int width, int height, int (*array)[width]) {
 }
 
 // Function to map iteration count to color based on a gradient
-void map_to_color(int iteration, int *red, int *green, int *blue) {
-    // Calculate smooth gradient colors
+void map_to_color(int iteration, int *red, int *green, int *blue, int color_choice) {
     double t = (double)iteration / MAX_ITERATION; // Normalize iteration count to range [0, 1]
 
-    // Smooth gradient colors (e.g., from blue to white)
-    *red = (int)(9 * (1 - t) * t * t * t * 255);
-    *green = (int)(15 * (1 - t) * (1 - t) * t * t * 255);
-    *blue = (int)(8.5 * (1 - t) * (1 - t) * (1 - t) * t * 255);
+    switch (color_choice) {
+        case 1:
+            // Existing smooth gradient scheme (blue to white)
+            *red = (int)(9 * (1 - t) * t * t * t * 255);
+            *green = (int)(15 * (1 - t) * (1 - t) * t * t * 255);
+            *blue = (int)(8.5 * (1 - t) * (1 - t) * (1 - t) * t * 255);
+            break;
+
+        case 2:
+            // New color scheme with better distribution for large canvases:
+            // Wider range of colors, starting with blue, cycling through green, yellow, red, and back to blue
+            double hue = 0.66 * t + 0.16;  // Adjust hue range for desired colors
+            *red = (int)(96 * (1 - fabs(4 * hue - 2)) * 255);
+            *green = (int)(144 * (fabs(4 * hue - 3) - fabs(4 * hue - 1)) * 255);
+            *blue = (int)(85 * (1 - fabs(2 * hue - 1)) * 255);
+            break;
+
+        case 3:
+            // Fire-like color scheme:
+            // Starts with dark red, transitions to orange and yellow, then fades to white
+            *red = (int)(255 * sqrt(t));
+            *green = (int)(185 * sqrt(t));
+            *blue = (int)(85 * sqrt(t));
+            break;
+
+        case 4:
+            // Autumn foliage color scheme
+            *red = (int)(255 * (0.5 + 0.5 * cos(2 * M_PI * t)));
+            *green = (int)(255 * (0.2 + 0.3 * cos(2 * M_PI * t + 2 * M_PI / 3)));
+            *blue = (int)(255 * (0.1 + 0.1 * cos(2 * M_PI * t + 4 * M_PI / 3)));
+            break;
+
+        case 5:
+            // Ocean-like color scheme:
+            // Starts with deep blue, transitions to lighter blues and greens
+            *red = (int)(50 + 205 * t);
+            *green = (int)(100 + 155 * t);
+            *blue = (int)(150 + 105 * t);
+            break;
+
+        case 6:
+            // Rainbow color scheme:
+            // Cycles through the rainbow spectrum
+            *red = (int)(255 * (1 - t));
+            *green = (int)(255 * fabs(0.5 - t));
+            *blue = (int)(255 * t);
+            break;
+
+        case 7:
+            // Desert color scheme:
+            // Starts with sandy brown, transitions to reddish-brown
+            *red = (int)(220 * (1 - t));
+            *green = (int)(180 * (1 - t));
+            *blue = (int)(130 * (1 - t));
+            break;
+
+        case 8:
+            // Pastel color scheme:
+            // Delicate, soft colors inspired by pastel art
+            *red = (int)(220 * (0.5 + 0.5 * sin(2 * M_PI * t)));
+            *green = (int)(205 * (0.5 + 0.5 * sin(2 * M_PI * t + 2 * M_PI / 3)));
+            *blue = (int)(255 * (0.5 + 0.5 * sin(2 * M_PI * t + 4 * M_PI / 3)));
+            break;
+
+        case 9:
+            // Night sky color scheme:
+            // Deep blue hues with hints of purple, reminiscent of a starry night sky
+            *red = (int)(20 + 100 * sin(2 * M_PI * t));
+            *green = (int)(10 + 50 * sin(2 * M_PI * t + M_PI / 2));
+            *blue = (int)(50 + 100 * sin(2 * M_PI * t + M_PI));
+            break;
+
+        default:
+            // Default to black for unknown color choice
+            *red = *green = *blue = 0;
+            break;
+    }
 }
 
 int main() {
@@ -187,7 +265,7 @@ int main() {
     //     printf("\n");
     // }
 
-    generate_png(WIDTH, HEIGHT, mandelbrotSet);
+    generate_png(WIDTH, HEIGHT, mandelbrotSet, COLOR_CHOICE);
 
     // Free memory
     free(mandelbrotSet);
