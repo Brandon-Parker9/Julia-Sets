@@ -401,11 +401,7 @@ int main(int argc, char *argv[]) {
         end_row = start_row + rows_per_process;
     }
 
-    printf("Rank: %d Start: %d End: %d\n", rank, start_row, end_row);
-
-    // Allocate memory for the Mandelbrot set
     int total_elements = WIDTH * (end_row - start_row);
-    printf("Rank: %d total_elements: %d\n", rank, total_elements);
 
      // Allocate memory for local Mandelbrot sets on each process
     int *local_mandelbrot_set;
