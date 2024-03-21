@@ -1,5 +1,3 @@
-
-#include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h> // Needed for usleep function
@@ -11,60 +9,18 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#define WIDTH 100
-#define HEIGHT 100
+#define WIDTH 100000
+#define HEIGHT 100000
 #define MAX_ITERATION 1000
 
 
 #define COLOR_CHOICE 1
 
-void calculate_mandelbrot_array(int width, int height, int *result);
-int generate_png(int width, int height, int array[], int color_choice);
+int generate_png(int width, int height, int (*array)[width], int color_choice);
 void map_to_color(int iteration, int *red, int *green, int *blue, int color_choice);
 double hue_to_rgb(double hue, double saturation, double lightness);
 
-void calculate_mandelbrot_array(int width, int height, int *result) {
-    double xmin = -2.0, xmax = 2.0, ymin = -2.0, ymax = 2.0;
-    double xstep = (xmax - xmin) / width;
-    double ystep = (ymax - ymin) / height;
-
-    unsigned long long current_pixel = 0; // Initialize current pixel count
-
-    for (int y = 0; y < height; y++) {
-        double y0 = ymin + y * ystep;
-        for (int x = 0; x < width; x++) {
-            double x0 = xmin + x * xstep;
-            double xx = 0.0, yy = 0.0;
-            int iteration = 0;
-
-            while (xx * xx + yy * yy <= 4.0 && iteration < MAX_ITERATION) {
-                double xtemp = xx * xx - yy * yy + x0;
-                yy = 2 * xx * yy + y0;
-                xx = xtemp;
-                iteration++;
-            }
-
-            if (iteration == MAX_ITERATION) {
-                result[y * width + x] = 0; // Black
-            } else {
-                // Set color based on iteration count
-                result[y * width + x] = iteration;
-            }
-
-            // Increment current pixel count
-            current_pixel++;
-
-            if (current_pixel % (WIDTH / 10) == 0){
-                printf("\rMandelbrot Pixel Progress: %.2f%% Pixel Count: %llu", (double)current_pixel / ((double)width * height) * 100, current_pixel);
-            }
-        }
-    }
-
-    // new line after progress percentage 
-    printf("\n");
-}
-
-int generate_png(int width, int height, int array[], int color_choice) {
+int generate_png(int width, int height, int (*array)[width], int color_choice) {
 
     char filename[100]; // Buffer to hold the filename
 
@@ -122,15 +78,40 @@ int generate_png(int width, int height, int array[], int color_choice) {
         fclose(fp);
         return 1;
     }
+    double xmin = -2.0, xmax = 2.0, ymin = -2.0, ymax = 2.0;
+    double xstep = (xmax - xmin) / width;
+    double ystep = (ymax - ymin) / height;
+    int result;
 
     unsigned long long current_pixel = 0; // Initialize current pixel count
 
     // Fill image data with solid blue color
     for (int y = 0; y < height; y++) {
+
+        double y0 = ymin + y * ystep;
+
         for (int x = 0; x < width; x++) {
 
+            double x0 = xmin + x * xstep;
+            double xx = 0.0, yy = 0.0;
+            int iteration = 0;
+
+            while (xx * xx + yy * yy <= 4.0 && iteration < MAX_ITERATION) {
+                double xtemp = xx * xx - yy * yy + x0;
+                yy = 2 * xx * yy + y0;
+                xx = xtemp;
+                iteration++;
+            }
+
+            if (iteration == MAX_ITERATION) {
+                result = 0; // Black
+            } else {
+                // Set color based on iteration count
+                result = iteration;
+            }
+
             int red, green, blue;
-            map_to_color(array[x], &red, &green, &blue, color_choice);
+            map_to_color(result, &red, &green, &blue, color_choice);
 
             // int offset = (y * width + x) * 4; // 4 bytes per pixel
             int offset = x * 4; // 4 bytes per pixel
@@ -153,11 +134,6 @@ int generate_png(int width, int height, int array[], int color_choice) {
 
     // new line after progress percentage 
     printf("\n");
-
-    // Write image data
-    // for (int y = 0; y < height; y++) {
-    //     png_write_row(png_ptr, &image_data[y * width * 4]);
-    // }
 
     // Write the end of the PNG information
     png_write_end(png_ptr, info_ptr);
@@ -273,6 +249,7 @@ void map_to_color(int iteration, int *red, int *green, int *blue, int color_choi
     }
 }
 
+
 double hue_to_rgb(double hue, double saturation, double lightness) {
     double chroma = (1 - fabs(2 * lightness - 1)) * saturation;
     double hue_mod = hue * 6;
@@ -309,66 +286,14 @@ double hue_to_rgb(double hue, double saturation, double lightness) {
     return r + m;
 }
 
-int main(int argc, char *argv[]) {
-
-    // int rank, size;
-    // double start_time, end_time, elapsed_time, tick;
-
-    // MPI_Init(&argc, &argv);
-    // MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    // MPI_Comm_size(MPI_COMM_WORLD, &size);
-
-    // // Returns the precision of the results returned by MPI_Wtime
-    // tick = MPI_Wtick();
-
-    // // Ensures all processes will enter the measured section of the code at the same time
-    // MPI_Barrier(MPI_COMM_WORLD);
-
-    // start_time = MPI_Wtime();
-
-    // // if rank is 0
-    // if (rank == 0) {
-        
-
-
-
-    // } else {
-        
-
-
-
-
-    // }
-
-    // // Ensures all processes will enter the measured section of the code at the same time
-    // MPI_Barrier(MPI_COMM_WORLD);
-
-    // end_time = MPI_Wtime();
-
-    // // Calculate the elapsed time
-    // elapsed_time = end_time - start_time;
-
-    // MPI_Finalize();
-
-    // if rank is 0, print out the time analysis for merging arrays
-    // if (rank == 0) {
-    //     printf("\n********** Array Merge Time **********\n");
-    //     printf("Total processes: %d\n", size);
-    //     printf("Total computation time: %e seconds\n", elapsed_time);
-    //     printf("Computation time per process: %e seconds\n", elapsed_time / size);
-    //     printf("Resolution of MPI_Wtime: %e seconds\n", tick);
-    // }
-
+int main() {
 
     // Allocate memory for the Mandelbrot set
-    int *mandelbrotSet = malloc(sizeof(int) * WIDTH * HEIGHT);
+    int (*mandelbrotSet)[WIDTH] = malloc(sizeof(int[HEIGHT][WIDTH]));
     if (mandelbrotSet == NULL) {
         fprintf(stderr, "Error: Memory allocation failed\n");
         return 1;
     }
-
-    // Generate the Mandelbrot set
-    calculate_mandelbrot_array(WIDTH, HEIGHT, mandelbrotSet);
 
     generate_png(WIDTH, HEIGHT, mandelbrotSet, COLOR_CHOICE);
 
