@@ -9,8 +9,8 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#define WIDTH 100000
-#define HEIGHT 100000
+#define WIDTH 1000
+#define HEIGHT 1000
 #define MAX_ITERATION 1000
 
 
@@ -287,6 +287,11 @@ double hue_to_rgb(double hue, double saturation, double lightness) {
 }
 
 int main() {
+    clock_t start_time, end_time;
+    double elapsed_time;
+
+    // Start measuring time
+    start_time = clock();
 
     // Allocate memory for the Mandelbrot set
     int (*mandelbrotSet)[WIDTH] = malloc(sizeof(int[HEIGHT][WIDTH]));
@@ -295,11 +300,20 @@ int main() {
         return 1;
     }
 
+    // Generate the Mandelbrot set and PNG image
     generate_png(WIDTH, HEIGHT, mandelbrotSet, COLOR_CHOICE);
 
     // Free memory
     free(mandelbrotSet);
 
-    return 0;
+    // Stop measuring time
+    end_time = clock();
 
+    // Calculate elapsed time in seconds
+    elapsed_time = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
+
+    // Print runtime in seconds
+    printf("Runtime: %.3f seconds\n", elapsed_time);
+
+    return 0;
 }

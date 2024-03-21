@@ -11,14 +11,15 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#define WIDTH 100
-#define HEIGHT 100
+#define WIDTH 1000
+#define HEIGHT 1000
 #define MAX_ITERATION 1000
 
 
 #define COLOR_CHOICE 1
 
 void calculate_mandelbrot_array(int width, int height, int *result);
+void calculate_mandelbrot_array_range(int width, int start_row, int end_row, int *result);
 int generate_png(int width, int height, int array[], int color_choice);
 void map_to_color(int iteration, int *red, int *green, int *blue, int color_choice);
 double hue_to_rgb(double hue, double saturation, double lightness);
@@ -62,6 +63,34 @@ void calculate_mandelbrot_array(int width, int height, int *result) {
 
     // new line after progress percentage 
     printf("\n");
+}
+
+void calculate_mandelbrot_array_range(int width, int start_row, int end_row, int *result) {
+    double xmin = -2.0, xmax = 2.0, ymin = -2.0, ymax = 2.0;
+    double xstep = (xmax - xmin) / width;
+    double ystep = (ymax - ymin) / HEIGHT;
+
+    for (int y = start_row; y < end_row; y++) {
+        double y0 = ymin + y * ystep;
+        for (int x = 0; x < width; x++) {
+            double x0 = xmin + x * xstep;
+            double xx = 0.0, yy = 0.0;
+            int iteration = 0;
+
+            while (xx * xx + yy * yy <= 4.0 && iteration < MAX_ITERATION) {
+                double xtemp = xx * xx - yy * yy + x0;
+                yy = 2 * xx * yy + y0;
+                xx = xtemp;
+                iteration++;
+            }
+
+            if (iteration == MAX_ITERATION) {
+                result[(y - start_row) * width + x] = 0; 
+            } else {
+                result[(y - start_row) * width + x] = iteration;
+            }
+        }
+    }
 }
 
 int generate_png(int width, int height, int array[], int color_choice) {
@@ -130,7 +159,7 @@ int generate_png(int width, int height, int array[], int color_choice) {
         for (int x = 0; x < width; x++) {
 
             int red, green, blue;
-            map_to_color(array[x], &red, &green, &blue, color_choice);
+            map_to_color(array[y * width + x], &red, &green, &blue, color_choice);
 
             // int offset = (y * width + x) * 4; // 4 bytes per pixel
             int offset = x * 4; // 4 bytes per pixel
@@ -311,69 +340,75 @@ double hue_to_rgb(double hue, double saturation, double lightness) {
 
 int main(int argc, char *argv[]) {
 
-    // int rank, size;
-    // double start_time, end_time, elapsed_time, tick;
+    int rank, size;
+    double start_time, end_time, elapsed_time, tick;
 
-    // MPI_Init(&argc, &argv);
-    // MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    // MPI_Comm_size(MPI_COMM_WORLD, &size);
+    MPI_Init(&argc, &argv);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    // // Returns the precision of the results returned by MPI_Wtime
-    // tick = MPI_Wtick();
+    // Returns the precision of the results returned by MPI_Wtime
+    tick = MPI_Wtick();
 
-    // // Ensures all processes will enter the measured section of the code at the same time
-    // MPI_Barrier(MPI_COMM_WORLD);
+    // Ensures all processes will enter the measured section of the code at the same time
+    MPI_Barrier(MPI_COMM_WORLD);
 
-    // start_time = MPI_Wtime();
+    start_time = MPI_Wtime();
 
-    // // if rank is 0
-    // if (rank == 0) {
-        
-
-
-
-    // } else {
-        
-
-
-
-
-    // }
-
-    // // Ensures all processes will enter the measured section of the code at the same time
-    // MPI_Barrier(MPI_COMM_WORLD);
-
-    // end_time = MPI_Wtime();
-
-    // // Calculate the elapsed time
-    // elapsed_time = end_time - start_time;
-
-    // MPI_Finalize();
-
-    // if rank is 0, print out the time analysis for merging arrays
-    // if (rank == 0) {
-    //     printf("\n********** Array Merge Time **********\n");
-    //     printf("Total processes: %d\n", size);
-    //     printf("Total computation time: %e seconds\n", elapsed_time);
-    //     printf("Computation time per process: %e seconds\n", elapsed_time / size);
-    //     printf("Resolution of MPI_Wtime: %e seconds\n", tick);
-    // }
-
+    // Determine rows to compute for each process
+    int rows_per_process = HEIGHT / size;
+    int start_row = rank * rows_per_process;
+    int end_row = (rank == size - 1) ? HEIGHT : start_row + rows_per_process;
 
     // Allocate memory for the Mandelbrot set
-    int *mandelbrotSet = malloc(sizeof(int) * WIDTH * HEIGHT);
+    int *mandelbrotSet = malloc(sizeof(int) * WIDTH * (end_row - start_row));
     if (mandelbrotSet == NULL) {
         fprintf(stderr, "Error: Memory allocation failed\n");
+        MPI_Finalize();
         return 1;
     }
 
     // Generate the Mandelbrot set
-    calculate_mandelbrot_array(WIDTH, HEIGHT, mandelbrotSet);
+    calculate_mandelbrot_array_range(WIDTH, start_row, end_row, mandelbrotSet);
 
-    generate_png(WIDTH, HEIGHT, mandelbrotSet, COLOR_CHOICE);
+    // Gather results to the main process
+    int *gatheredSet = NULL;
 
-    // Free memory
+    // if rank is 0
+    if (rank == 0) {
+        
+        gatheredSet = malloc(sizeof(int) * WIDTH * HEIGHT);
+
+    } 
+
+    MPI_Gather(mandelbrotSet, WIDTH * (end_row - start_row), MPI_INT, gatheredSet, WIDTH * (end_row - start_row), MPI_INT, 0, MPI_COMM_WORLD);
+
+    // Generate PNG image in the main process
+    if (rank == 0) {
+        generate_png(WIDTH, HEIGHT, gatheredSet, COLOR_CHOICE);
+        free(gatheredSet);
+    }
+
     free(mandelbrotSet);
+
+    // Ensures all processes will enter the measured section of the code at the same time
+    MPI_Barrier(MPI_COMM_WORLD);
+
+    end_time = MPI_Wtime();
+
+    // Calculate the elapsed time
+    elapsed_time = end_time - start_time;
+
+    MPI_Finalize();
+
+    // if rank is 0, print out the time analysis for merging arrays
+    if (rank == 0) {
+        printf("\n********** PNG Creation Time **********\n");
+        printf("Total processes: %d\n", size);
+        printf("Total computation time: %e seconds\n", elapsed_time);
+        printf("Computation time per process: %e seconds\n", elapsed_time / size);
+        printf("Resolution of MPI_Wtime: %e seconds\n", tick);
+    }
 
     return 0;
 
