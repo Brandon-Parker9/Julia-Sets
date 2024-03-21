@@ -9,8 +9,8 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#define WIDTH 1000
-#define HEIGHT 1000
+#define WIDTH 10000
+#define HEIGHT 10000
 #define MAX_ITERATION 1000
 
 

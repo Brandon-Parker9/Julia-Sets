@@ -11,10 +11,9 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#define WIDTH 1000
-#define HEIGHT 1000
+#define WIDTH 100
+#define HEIGHT 100
 #define MAX_ITERATION 1000
-
 
 #define COLOR_CHOICE 1
 
@@ -66,32 +65,55 @@ void calculate_mandelbrot_array(int width, int height, int *result) {
 }
 
 void calculate_mandelbrot_array_range(int width, int start_row, int end_row, int *result) {
+    
+    // Define the boundaries of the Mandelbrot set in the complex plane
     double xmin = -2.0, xmax = 2.0, ymin = -2.0, ymax = 2.0;
+    
+    // Calculate the step size in the x and y directions
     double xstep = (xmax - xmin) / width;
     double ystep = (ymax - ymin) / HEIGHT;
 
+    // Iterate through rows within the specified range
     for (int y = start_row; y < end_row; y++) {
+        // Calculate the imaginary part of the complex number corresponding to the current row
         double y0 = ymin + y * ystep;
+        
+        // Iterate through columns
         for (int x = 0; x < width; x++) {
+            // Calculate the real part of the complex number corresponding to the current column
             double x0 = xmin + x * xstep;
+            
+            // Initialize variables for the real and imaginary parts of the complex number
             double xx = 0.0, yy = 0.0;
+            
+            // Initialize the iteration count
             int iteration = 0;
 
+            // Iterate until the magnitude of the complex number exceeds 2 or maximum iterations are reached
             while (xx * xx + yy * yy <= 4.0 && iteration < MAX_ITERATION) {
+                // Update the real part of the complex number
                 double xtemp = xx * xx - yy * yy + x0;
+                
+                // Update the imaginary part of the complex number
                 yy = 2 * xx * yy + y0;
+                
+                // Update the real part for the next iteration
                 xx = xtemp;
+                
+                // Increment the iteration count
                 iteration++;
             }
 
+            // Store the result in the result array based on the iteration count
             if (iteration == MAX_ITERATION) {
-                result[(y - start_row) * width + x] = 0; 
+                result[(y - start_row) * width + x] = 0;  // Inside Mandelbrot set
             } else {
-                result[(y - start_row) * width + x] = iteration;
+                result[(y - start_row) * width + x] = iteration;  // Outside Mandelbrot set
             }
         }
     }
 }
+
 
 int generate_png(int width, int height, int array[], int color_choice) {
 
@@ -142,7 +164,6 @@ int generate_png(int width, int height, int array[], int color_choice) {
     png_write_info(png_ptr, info_ptr);
 
     // Allocate memory for entire image data
-    // png_bytep image_data = (png_bytep)malloc(height * width * 4 * sizeof(png_byte)); // 4 bytes per pixel for RGBA
     png_bytep image_data = (png_bytep)malloc(width * 4 * sizeof(png_byte)); // 4 bytes per pixel for RGBA
 
     if (!image_data) {
@@ -152,16 +173,17 @@ int generate_png(int width, int height, int array[], int color_choice) {
         return 1;
     }
 
-    unsigned long long current_pixel = 0; // Initialize current pixel count
+    // Initialize current pixel count
+    unsigned long long current_pixel = 0; 
 
     // Fill image data with solid blue color
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
 
+            // Get pixel colour
             int red, green, blue;
             map_to_color(array[y * width + x], &red, &green, &blue, color_choice);
 
-            // int offset = (y * width + x) * 4; // 4 bytes per pixel
             int offset = x * 4; // 4 bytes per pixel
 
             image_data[offset] = red;         // Red
@@ -182,11 +204,6 @@ int generate_png(int width, int height, int array[], int color_choice) {
 
     // new line after progress percentage 
     printf("\n");
-
-    // Write image data
-    // for (int y = 0; y < height; y++) {
-    //     png_write_row(png_ptr, &image_data[y * width * 4]);
-    // }
 
     // Write the end of the PNG information
     png_write_end(png_ptr, info_ptr);
@@ -303,11 +320,20 @@ void map_to_color(int iteration, int *red, int *green, int *blue, int color_choi
 }
 
 double hue_to_rgb(double hue, double saturation, double lightness) {
+
+    // Calculate chroma (color intensity) based on lightness and saturation
     double chroma = (1 - fabs(2 * lightness - 1)) * saturation;
+    
+    // Modify hue to fit within the range [0, 6) to simplify color mapping
     double hue_mod = hue * 6;
+    
+    // Calculate intermediate value 'x' based on chroma and hue
     double x = chroma * (1 - fabs(fmod(hue_mod, 2) - 1));
+    
+    // Initialize variables for red, green, and blue components
     double r, g, b;
     
+    // Determine RGB values based on the hue value
     if (hue_mod < 1) {
         r = chroma;
         g = x;
@@ -334,9 +360,13 @@ double hue_to_rgb(double hue, double saturation, double lightness) {
         b = x;
     }
 
+    // Calculate the 'm' parameter to shift color intensity
     double m = lightness - 0.5 * chroma;
+    
+    // Return the final RGB color value
     return r + m;
 }
+
 
 int main(int argc, char *argv[]) {
 
@@ -355,41 +385,86 @@ int main(int argc, char *argv[]) {
 
     start_time = MPI_Wtime();
 
-    // Determine rows to compute for each process
+   // Determine rows to compute for each process
     int rows_per_process = HEIGHT / size;
-    int start_row = rank * rows_per_process;
-    int end_row = (rank == size - 1) ? HEIGHT : start_row + rows_per_process;
+    int remaining_rows = HEIGHT % size; // Rows left after distributing evenly
+
+    int start_row, end_row;
+
+    if (rank < remaining_rows) {
+        // Distribute remaining rows evenly among the first 'remaining_rows' processes
+        start_row = rank * (rows_per_process + 1);
+        end_row = start_row + (rows_per_process + 1);
+    } else {
+        // Distribute remaining rows among the remaining processes
+        start_row = rank * rows_per_process + remaining_rows;
+        end_row = start_row + rows_per_process;
+    }
+
+    printf("Rank: %d Start: %d End: %d\n", rank, start_row, end_row);
 
     // Allocate memory for the Mandelbrot set
-    int *mandelbrotSet = malloc(sizeof(int) * WIDTH * (end_row - start_row));
-    if (mandelbrotSet == NULL) {
+    int total_elements = WIDTH * (end_row - start_row);
+    printf("Rank: %d total_elements: %d\n", rank, total_elements);
+
+     // Allocate memory for local Mandelbrot sets on each process
+    int *local_mandelbrot_set;
+    local_mandelbrot_set = malloc(sizeof(int) * total_elements);
+    if (local_mandelbrot_set == NULL) {
         fprintf(stderr, "Error: Memory allocation failed\n");
         MPI_Finalize();
         return 1;
     }
 
     // Generate the Mandelbrot set
-    calculate_mandelbrot_array_range(WIDTH, start_row, end_row, mandelbrotSet);
+    calculate_mandelbrot_array_range(WIDTH, start_row, end_row, local_mandelbrot_set);
 
-    // Gather results to the main process
-    int *gatheredSet = NULL;
-
-    // if rank is 0
+    // Root process pre-allocates final Mandelbrot set
+    int *final_mandelbrot_set;
     if (rank == 0) {
-        
-        gatheredSet = malloc(sizeof(int) * WIDTH * HEIGHT);
-
-    } 
-
-    MPI_Gather(mandelbrotSet, WIDTH * (end_row - start_row), MPI_INT, gatheredSet, WIDTH * (end_row - start_row), MPI_INT, 0, MPI_COMM_WORLD);
-
-    // Generate PNG image in the main process
-    if (rank == 0) {
-        generate_png(WIDTH, HEIGHT, gatheredSet, COLOR_CHOICE);
-        free(gatheredSet);
+        final_mandelbrot_set = malloc(sizeof(int) * WIDTH * HEIGHT);
+        if (final_mandelbrot_set == NULL) {
+        fprintf(stderr, "Error: Memory allocation failed\n");
+        MPI_Finalize();
+        return 1;
+        }
     }
 
-    free(mandelbrotSet);
+    // Send and Receive local results (instead of Gather)
+    if (rank != 0) {
+
+        // Send local_mandelbrot_set size (consider uneven distribution)
+        MPI_Send(&total_elements, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+        MPI_Send(local_mandelbrot_set, total_elements, MPI_INT, 0, 1, MPI_COMM_WORLD);
+
+    } else { // Root process receives from all processes
+
+        int offset = 0;
+
+        // Copy received data to final_mandelbrot_set at appropriate offset
+        memcpy(final_mandelbrot_set + offset, local_mandelbrot_set, sizeof(int) * total_elements);
+        offset += total_elements;
+
+        for (int i = 1; i < size; i++) {
+
+            // Allocate memory for received data
+            int received_size;
+            MPI_Recv(&received_size, 1, MPI_INT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+            int *temp_buffer = malloc(sizeof(int) * received_size);
+            MPI_Recv(temp_buffer, received_size, MPI_INT, i, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+            // Copy received data to final_mandelbrot_set at appropriate offset
+            memcpy(final_mandelbrot_set + offset, temp_buffer, sizeof(int) * received_size);
+            offset += received_size;
+
+            free(temp_buffer); // Free temporary buffer if used
+        }
+
+        generate_png(WIDTH, HEIGHT, final_mandelbrot_set, COLOR_CHOICE);
+        free(final_mandelbrot_set);
+
+    }
 
     // Ensures all processes will enter the measured section of the code at the same time
     MPI_Barrier(MPI_COMM_WORLD);
