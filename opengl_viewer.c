@@ -7,7 +7,7 @@ GLuint textureID;
 
 void init() {
     // Open the PNG file
-    FILE *fp = fopen("image.png", "rb");
+    FILE *fp = fopen("good-images\output_1000x1000_color-1.png", "rb");
     if (!fp) {
         fprintf(stderr, "Error: Could not open the PNG file.\n");
         exit(1);
