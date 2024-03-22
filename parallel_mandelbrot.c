@@ -11,8 +11,8 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#define WIDTH 100
-#define HEIGHT 100
+#define WIDTH 10000
+#define HEIGHT 10000
 #define MAX_ITERATION 1000
 
 #define COLOR_CHOICE 1
@@ -67,7 +67,7 @@ void calculate_mandelbrot_array(int width, int height, int *result) {
 void calculate_mandelbrot_array_range(int width, int start_row, int end_row, int *result) {
     
     // Define the boundaries of the Mandelbrot set in the complex plane
-    double xmin = -2.0, xmax = 2.0, ymin = -2.0, ymax = 2.0;
+    double xmin = -2.0, xmax = 3.0, ymin = -3.0, ymax = 3.0;
     
     // Calculate the step size in the x and y directions
     double xstep = (xmax - xmin) / width;
@@ -75,11 +75,13 @@ void calculate_mandelbrot_array_range(int width, int start_row, int end_row, int
 
     // Iterate through rows within the specified range
     for (int y = start_row; y < end_row; y++) {
+
         // Calculate the imaginary part of the complex number corresponding to the current row
         double y0 = ymin + y * ystep;
         
         // Iterate through columns
         for (int x = 0; x < width; x++) {
+
             // Calculate the real part of the complex number corresponding to the current column
             double x0 = xmin + x * xstep;
             
@@ -91,6 +93,7 @@ void calculate_mandelbrot_array_range(int width, int start_row, int end_row, int
 
             // Iterate until the magnitude of the complex number exceeds 2 or maximum iterations are reached
             while (xx * xx + yy * yy <= 4.0 && iteration < MAX_ITERATION) {
+
                 // Update the real part of the complex number
                 double xtemp = xx * xx - yy * yy + x0;
                 

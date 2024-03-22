@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h> // Needed for usleep function
-#include <time.h> // Needed for time functions
+#include <unistd.h>
+#include <time.h>
 #include <math.h>
 #include <png.h>
 
@@ -22,9 +22,10 @@ double hue_to_rgb(double hue, double saturation, double lightness);
 
 int generate_png(int width, int height, int (*array)[width], int color_choice) {
 
-    char filename[100]; // Buffer to hold the filename
+    // Buffer to hold the filename
+    char filename[100]; 
 
-    // Format the filename with height and width
+    // Format the filename with height, width, color choice, and maximum iteration
     snprintf(filename, sizeof(filename), "output_%dx%d_color-%d_iterations-%d.png", WIDTH, HEIGHT, COLOR_CHOICE, MAX_ITERATION);
 
     // Open file for writing (binary mode)
@@ -69,7 +70,6 @@ int generate_png(int width, int height, int (*array)[width], int color_choice) {
     png_write_info(png_ptr, info_ptr);
 
     // Allocate memory for entire image data
-    // png_bytep image_data = (png_bytep)malloc(height * width * 4 * sizeof(png_byte)); // 4 bytes per pixel for RGBA
     png_bytep image_data = (png_bytep)malloc(width * 4 * sizeof(png_byte)); // 4 bytes per pixel for RGBA
 
     if (!image_data) {
@@ -78,12 +78,15 @@ int generate_png(int width, int height, int (*array)[width], int color_choice) {
         fclose(fp);
         return 1;
     }
-    double xmin = -2.0, xmax = 2.0, ymin = -2.0, ymax = 2.0;
+
+    // Define fractal coordinates and steps
+    double xmin = -2.0, xmax = 1.0, ymin = -1.5, ymax = 1.5;
     double xstep = (xmax - xmin) / width;
     double ystep = (ymax - ymin) / height;
     int result;
 
-    unsigned long long current_pixel = 0; // Initialize current pixel count
+    // Initialize current pixel count
+    unsigned long long current_pixel = 0;
 
     // Fill image data with solid blue color
     for (int y = 0; y < height; y++) {
@@ -96,26 +99,32 @@ int generate_png(int width, int height, int (*array)[width], int color_choice) {
             double xx = 0.0, yy = 0.0;
             int iteration = 0;
 
+            // Perform fractal iteration
             while (xx * xx + yy * yy <= 4.0 && iteration < MAX_ITERATION) {
                 double xtemp = xx * xx - yy * yy + x0;
                 yy = 2 * xx * yy + y0;
                 xx = xtemp;
                 iteration++;
-            }
+            }  
 
+            // Determine color based on iteration count
             if (iteration == MAX_ITERATION) {
-                result = 0; // Black
+                // Black
+                result = 0;
             } else {
                 // Set color based on iteration count
                 result = iteration;
             }
 
             int red, green, blue;
+
+            // Map iteration count to RGB color
             map_to_color(result, &red, &green, &blue, color_choice);
 
-            // int offset = (y * width + x) * 4; // 4 bytes per pixel
-            int offset = x * 4; // 4 bytes per pixel
+            // Calculate offset for pixel
+            int offset = x * 4; // 4 bytes per pixel 
 
+            // Assign RGBA values to image data
             image_data[offset] = red;         // Red
             image_data[offset + 1] = green;   // Green
             image_data[offset + 2] = blue;    // Blue
@@ -124,15 +133,18 @@ int generate_png(int width, int height, int (*array)[width], int color_choice) {
             // Increment current pixel count
             current_pixel++;
 
+            // Print progress percentage
             if (current_pixel % (WIDTH / 10) == 0){
                 printf("\rPNG Pixel Progress: %.2f%% Pixel Count: %llu", (double)current_pixel / ((double)width * height) * 100, current_pixel);
             }
         }
+
+        // Write current row to PNG
         png_write_row(png_ptr, &image_data[0]);
 
     }
 
-    // new line after progress percentage 
+    // Print newline after progress percentage  
     printf("\n");
 
     // Write the end of the PNG information
@@ -143,6 +155,7 @@ int generate_png(int width, int height, int (*array)[width], int color_choice) {
     png_destroy_write_struct(&png_ptr, &info_ptr);
     fclose(fp);
 
+    // Print success message
     printf("PNG image created successfully: %s \n", filename);
     return 0;
 }
@@ -249,13 +262,19 @@ void map_to_color(int iteration, int *red, int *green, int *blue, int color_choi
     }
 }
 
-
 double hue_to_rgb(double hue, double saturation, double lightness) {
+    // Calculate chroma (color intensity)
     double chroma = (1 - fabs(2 * lightness - 1)) * saturation;
+
+    // Convert hue to hue_mod, which is a value between 0 and 6
     double hue_mod = hue * 6;
+
+    // Calculate intermediate value x
     double x = chroma * (1 - fabs(fmod(hue_mod, 2) - 1));
+
     double r, g, b;
-    
+
+    // Determine RGB components based on hue_mod
     if (hue_mod < 1) {
         r = chroma;
         g = x;
@@ -282,7 +301,10 @@ double hue_to_rgb(double hue, double saturation, double lightness) {
         b = x;
     }
 
+    // Calculate lightness modifier (m)
     double m = lightness - 0.5 * chroma;
+
+    // Return final RGB value by adding lightness modifier to each RGB component
     return r + m;
 }
 

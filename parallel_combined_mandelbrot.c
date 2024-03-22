@@ -13,7 +13,7 @@
 
 #define WIDTH 100
 #define HEIGHT 100
-#define MAX_ITERATION 2000
+#define MAX_ITERATION 1000
 
 #define COLOR_CHOICE 1
 
@@ -25,7 +25,7 @@ double hue_to_rgb(double hue, double saturation, double lightness);
 void calculate_mandelbrot_array_range(int width, int start_row, int end_row, int *result) {
     
     // Define the boundaries of the Mandelbrot set in the complex plane
-    double xmin = -2.0, xmax = 2.0, ymin = -2.0, ymax = 2.0;
+    double xmin = -2.0, xmax = 1.0, ymin = -1.5, ymax = 1.5;
     
     // Calculate the step size in the x and y directions
     double xstep = (xmax - xmin) / width;
@@ -365,20 +365,25 @@ int main(int argc, char *argv[]) {
                     int red, green, blue;
                     map_to_color(array[y * WIDTH + x], &red, &green, &blue, COLOR_CHOICE);
 
-                    int rgbg_offset = x * 4; // 4 bytes per pixel
+                    // Calculate offset for pixel
+                    int offset = x * 4; // 4 bytes per pixel
 
-                    image_data[rgbg_offset] = red;         // Red
-                    image_data[rgbg_offset + 1] = green;   // Green
-                    image_data[rgbg_offset + 2] = blue;    // Blue
-                    image_data[rgbg_offset + 3] = 255;     // Alpha (fully opaque)
+                    // Assign RGBA values to image data
+                    image_data[offset] = red;         // Red
+                    image_data[offset + 1] = green;   // Green
+                    image_data[offset + 2] = blue;    // Blue
+                    image_data[offset + 3] = 255;     // Alpha (fully opaque)
 
                     // Increment current pixel count
                     current_pixel++;
 
+                    // Print progress percentage
                     if (current_pixel % (WIDTH / 10) == 0){
                         printf("\rPNG Pixel Progress: %.2f%% Pixel Count: %llu", (double)current_pixel / ((double)WIDTH * HEIGHT) * 100, current_pixel);
                     }
                 }
+
+                // Write current row to PNG
                 png_write_row(png_ptr, &image_data[0]);
             }
 
@@ -386,7 +391,7 @@ int main(int argc, char *argv[]) {
             free(array);
         }
 
-        // new line after progress percentage 
+        // Print newline after progress percentage  
         printf("\n");
 
         // Write the end of the PNG information
@@ -396,6 +401,7 @@ int main(int argc, char *argv[]) {
         png_destroy_write_struct(&png_ptr, &info_ptr);
         fclose(fp);
 
+        // Print success message
         printf("\nPNG image created successfully: %s \n", filename);
 
     }
