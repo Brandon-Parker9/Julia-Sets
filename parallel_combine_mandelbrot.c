@@ -13,56 +13,14 @@
 
 #define WIDTH 100
 #define HEIGHT 100
-#define MAX_ITERATION 1000
+#define MAX_ITERATION 2000
 
 #define COLOR_CHOICE 1
 
-void calculate_mandelbrot_array(int width, int height, int *result);
 void calculate_mandelbrot_array_range(int width, int start_row, int end_row, int *result);
-int generate_png(int width, int height, int array[], int color_choice);
 void map_to_color(int iteration, int *red, int *green, int *blue, int color_choice);
 double hue_to_rgb(double hue, double saturation, double lightness);
 
-void calculate_mandelbrot_array(int width, int height, int *result) {
-    double xmin = -2.0, xmax = 2.0, ymin = -2.0, ymax = 2.0;
-    double xstep = (xmax - xmin) / width;
-    double ystep = (ymax - ymin) / height;
-
-    unsigned long long current_pixel = 0; // Initialize current pixel count
-
-    for (int y = 0; y < height; y++) {
-        double y0 = ymin + y * ystep;
-        for (int x = 0; x < width; x++) {
-            double x0 = xmin + x * xstep;
-            double xx = 0.0, yy = 0.0;
-            int iteration = 0;
-
-            while (xx * xx + yy * yy <= 4.0 && iteration < MAX_ITERATION) {
-                double xtemp = xx * xx - yy * yy + x0;
-                yy = 2 * xx * yy + y0;
-                xx = xtemp;
-                iteration++;
-            }
-
-            if (iteration == MAX_ITERATION) {
-                result[y * width + x] = 0; // Black
-            } else {
-                // Set color based on iteration count
-                result[y * width + x] = iteration;
-            }
-
-            // Increment current pixel count
-            current_pixel++;
-
-            if (current_pixel % (WIDTH / 10) == 0){
-                printf("\rMandelbrot Pixel Progress: %.2f%% Pixel Count: %llu", (double)current_pixel / ((double)width * height) * 100, current_pixel);
-            }
-        }
-    }
-
-    // new line after progress percentage 
-    printf("\n");
-}
 
 void calculate_mandelbrot_array_range(int width, int start_row, int end_row, int *result) {
     
@@ -112,109 +70,6 @@ void calculate_mandelbrot_array_range(int width, int start_row, int end_row, int
             }
         }
     }
-}
-
-
-int generate_png(int width, int height, int array[], int color_choice) {
-
-    char filename[100]; // Buffer to hold the filename
-
-    // Format the filename with height and width
-    snprintf(filename, sizeof(filename), "output_%dx%d_color-%d_iterations-%d.png", WIDTH, HEIGHT, COLOR_CHOICE, MAX_ITERATION);
-
-    // Open file for writing (binary mode)
-    FILE *fp = fopen(filename, "wb");
-    if (!fp) {
-        fprintf(stderr, "Error opening file for writing\n");
-        return 1;
-    }
-
-    // Create PNG structures
-    png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-    if (!png_ptr) {
-        fclose(fp);
-        fprintf(stderr, "Error creating PNG write structure\n");
-        return 1;
-    }
-
-    png_infop info_ptr = png_create_info_struct(png_ptr);
-    if (!info_ptr) {
-        png_destroy_write_struct(&png_ptr, NULL);
-        fclose(fp);
-        fprintf(stderr, "Error creating PNG info structure\n");
-        return 1;
-    }
-
-    // Error handling setup
-    if (setjmp(png_jmpbuf(png_ptr))) {
-        png_destroy_write_struct(&png_ptr, &info_ptr);
-        fclose(fp);
-        fprintf(stderr, "Error during PNG creation\n");
-        return 1;
-    }
-
-    // Set image properties
-    png_set_IHDR(png_ptr, info_ptr, width, height, 8, PNG_COLOR_TYPE_RGBA, PNG_INTERLACE_NONE,
-                 PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_BASE);
-
-    // Initialize I/O for writing to file
-    png_init_io(png_ptr, fp);
-
-    // Write PNG header (including all required information)
-    png_write_info(png_ptr, info_ptr);
-
-    // Allocate memory for entire image data
-    png_bytep image_data = (png_bytep)malloc(width * 4 * sizeof(png_byte)); // 4 bytes per pixel for RGBA
-
-    if (!image_data) {
-        fprintf(stderr, "Error allocating memory for image data\n");
-        png_destroy_write_struct(&png_ptr, &info_ptr);
-        fclose(fp);
-        return 1;
-    }
-
-    // Initialize current pixel count
-    unsigned long long current_pixel = 0; 
-
-    // Fill image data with solid blue color
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-
-            // Get pixel colour
-            int red, green, blue;
-            map_to_color(array[y * width + x], &red, &green, &blue, color_choice);
-
-            int offset = x * 4; // 4 bytes per pixel
-
-            image_data[offset] = red;         // Red
-            image_data[offset + 1] = green;   // Green
-            image_data[offset + 2] = blue;    // Blue
-            image_data[offset + 3] = 255;     // Alpha (fully opaque)
-
-            // Increment current pixel count
-            current_pixel++;
-
-            if (current_pixel % (WIDTH / 10) == 0){
-                printf("\rPNG Pixel Progress: %.2f%% Pixel Count: %llu", (double)current_pixel / ((double)width * height) * 100, current_pixel);
-            }
-        }
-        png_write_row(png_ptr, &image_data[0]);
-
-    }
-
-    // new line after progress percentage 
-    printf("\n");
-
-    // Write the end of the PNG information
-    png_write_end(png_ptr, info_ptr);
-
-    // Clean up
-    free(image_data);
-    png_destroy_write_struct(&png_ptr, &info_ptr);
-    fclose(fp);
-
-    printf("PNG image created successfully: %s \n", filename);
-    return 0;
 }
 
 void map_to_color(int iteration, int *red, int *green, int *blue, int color_choice) {
@@ -367,7 +222,6 @@ double hue_to_rgb(double hue, double saturation, double lightness) {
     return r + m;
 }
 
-
 int main(int argc, char *argv[]) {
 
     int rank, size;
@@ -401,11 +255,11 @@ int main(int argc, char *argv[]) {
         end_row = start_row + rows_per_process;
     }
 
-    int total_elements = WIDTH * (end_row - start_row);
+    int local_total_elements = WIDTH * (end_row - start_row);
 
      // Allocate memory for local Mandelbrot sets on each process
     int *local_mandelbrot_set;
-    local_mandelbrot_set = malloc(sizeof(int) * total_elements);
+    local_mandelbrot_set = malloc(sizeof(int) * local_total_elements);
     if (local_mandelbrot_set == NULL) {
         fprintf(stderr, "Error: Memory allocation failed\n");
         MPI_Finalize();
@@ -415,50 +269,134 @@ int main(int argc, char *argv[]) {
     // Generate the Mandelbrot set
     calculate_mandelbrot_array_range(WIDTH, start_row, end_row, local_mandelbrot_set);
 
-    // Root process pre-allocates final Mandelbrot set
-    int *final_mandelbrot_set;
-    if (rank == 0) {
-        final_mandelbrot_set = malloc(sizeof(int) * WIDTH * HEIGHT);
-        if (final_mandelbrot_set == NULL) {
-        fprintf(stderr, "Error: Memory allocation failed\n");
-        MPI_Finalize();
-        return 1;
-        }
-    }
-
     // Send and Receive local results (instead of Gather)
     if (rank != 0) {
 
         // Send local_mandelbrot_set size (consider uneven distribution)
-        MPI_Send(&total_elements, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-        MPI_Send(local_mandelbrot_set, total_elements, MPI_INT, 0, 1, MPI_COMM_WORLD);
+        MPI_Send(&local_total_elements, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+        MPI_Send(local_mandelbrot_set, local_total_elements, MPI_INT, 0, 1, MPI_COMM_WORLD);
 
     } else { // Root process receives from all processes
-        
-        int offset = 0;
 
-        // Copy received data to final_mandelbrot_set at appropriate offset
-        memcpy(final_mandelbrot_set + offset, local_mandelbrot_set, sizeof(int) * total_elements);
-        offset += total_elements;
+        char filename[100]; // Buffer to hold the filename
 
-        for (int i = 1; i < size; i++) {
+        // Format the filename with height and width
+        snprintf(filename, sizeof(filename), "output_%dx%d_color-%d_iterations-%d.png", WIDTH, HEIGHT, COLOR_CHOICE, MAX_ITERATION);
 
-            // Allocate memory for received data
-            int received_size;
-            MPI_Recv(&received_size, 1, MPI_INT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
-            int *temp_buffer = malloc(sizeof(int) * received_size);
-            MPI_Recv(temp_buffer, received_size, MPI_INT, i, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
-            // Copy received data to final_mandelbrot_set at appropriate offset
-            memcpy(final_mandelbrot_set + offset, temp_buffer, sizeof(int) * received_size);
-            offset += received_size;
-
-            free(temp_buffer); // Free temporary buffer if used
+        // Open file for writing (binary mode)
+        FILE *fp = fopen(filename, "wb");
+        if (!fp) {
+            fprintf(stderr, "Error opening file for writing\n");
+            return 1;
         }
 
-        generate_png(WIDTH, HEIGHT, final_mandelbrot_set, COLOR_CHOICE);
-        free(final_mandelbrot_set);
+        // Create PNG structures
+        png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+        if (!png_ptr) {
+            fclose(fp);
+            fprintf(stderr, "Error creating PNG write structure\n");
+            return 1;
+        }
+
+        png_infop info_ptr = png_create_info_struct(png_ptr);
+        if (!info_ptr) {
+            png_destroy_write_struct(&png_ptr, NULL);
+            fclose(fp);
+            fprintf(stderr, "Error creating PNG info structure\n");
+            return 1;
+        }
+
+        // Error handling setup
+        if (setjmp(png_jmpbuf(png_ptr))) {
+            png_destroy_write_struct(&png_ptr, &info_ptr);
+            fclose(fp);
+            fprintf(stderr, "Error during PNG creation\n");
+            return 1;
+        }
+
+        // Set image properties
+        png_set_IHDR(png_ptr, info_ptr, WIDTH, HEIGHT, 8, PNG_COLOR_TYPE_RGBA, PNG_INTERLACE_NONE,
+                    PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_BASE);
+
+        // Initialize I/O for writing to file
+        png_init_io(png_ptr, fp);
+
+        // Write PNG header (including all required information)
+        png_write_info(png_ptr, info_ptr);
+
+        // Initialize current pixel count
+        unsigned long long current_pixel = 0; 
+        int* array;
+        int received_size;
+
+        for (int i = 0; i < size; i++) {
+
+            if (i == 0){
+                
+                array = local_mandelbrot_set;
+                received_size = local_total_elements;
+
+            } else {
+
+                // Allocate memory for received data
+                received_size;
+                MPI_Recv(&received_size, 1, MPI_INT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+                array = malloc(sizeof(int) * received_size);
+                MPI_Recv(array, received_size, MPI_INT, i, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+            }
+
+            // Allocate memory for section of image data
+            png_bytep image_data = (png_bytep)malloc(received_size * 4 * sizeof(png_byte)); // 4 bytes per pixel for RGBA
+
+            if (!image_data) {
+                fprintf(stderr, "Error allocating memory for image data\n");
+                png_destroy_write_struct(&png_ptr, &info_ptr);
+                fclose(fp);
+                return 1;
+            }
+
+            // Fill image data with solid blue color
+            for (int y = 0; y < (received_size/WIDTH); y++) {
+                for (int x = 0; x < WIDTH; x++) {
+
+                    // Get pixel colour
+                    int red, green, blue;
+                    map_to_color(array[y * WIDTH + x], &red, &green, &blue, COLOR_CHOICE);
+
+                    int rgbg_offset = x * 4; // 4 bytes per pixel
+
+                    image_data[rgbg_offset] = red;         // Red
+                    image_data[rgbg_offset + 1] = green;   // Green
+                    image_data[rgbg_offset + 2] = blue;    // Blue
+                    image_data[rgbg_offset + 3] = 255;     // Alpha (fully opaque)
+
+                    // Increment current pixel count
+                    current_pixel++;
+
+                    if (current_pixel % (WIDTH / 10) == 0){
+                        printf("\rPNG Pixel Progress: %.2f%% Pixel Count: %llu", (double)current_pixel / ((double)WIDTH * HEIGHT) * 100, current_pixel);
+                    }
+                }
+                png_write_row(png_ptr, &image_data[0]);
+            }
+
+            free(image_data);
+            free(array);
+        }
+
+        // new line after progress percentage 
+        printf("\n");
+
+        // Write the end of the PNG information
+        png_write_end(png_ptr, info_ptr);
+
+        // Clean up
+        png_destroy_write_struct(&png_ptr, &info_ptr);
+        fclose(fp);
+
+        printf("\nPNG image created successfully: %s \n", filename);
 
     }
 

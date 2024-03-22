@@ -25,7 +25,7 @@ int generate_png(int width, int height, int (*array)[width], int color_choice) {
     char filename[100]; // Buffer to hold the filename
 
     // Format the filename with height and width
-    snprintf(filename, sizeof(filename), "output_%dx%d_color-%d.png", WIDTH, HEIGHT, COLOR_CHOICE);
+    snprintf(filename, sizeof(filename), "output_%dx%d_color-%d_iterations-%d.png", WIDTH, HEIGHT, COLOR_CHOICE, MAX_ITERATION);
 
     // Open file for writing (binary mode)
     FILE *fp = fopen(filename, "wb");
