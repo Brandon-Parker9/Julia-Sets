@@ -429,7 +429,7 @@ int main(int argc, char *argv[]) {
         printf("Total computation time: %e seconds\n", elapsed_time);
         printf("Computation time per process: %e seconds\n", elapsed_time / size);
         printf("Resolution of MPI_Wtime: %e seconds\n", tick);
-        printf("%d,%d,%d,%e,%e,%e",WIDTH, HEIGHT, size, elapsed_time, (elapsed_time / size), tick);
+        printf("%d,%d,%d,%e,%e,%e,%f,%f",WIDTH, HEIGHT, size, elapsed_time, (elapsed_time / size), tick, REAL_NUMBER, IMAGINARY_NUMBER);
     }
 
     return 0;
