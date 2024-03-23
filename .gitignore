@@ -1,4 +1,5 @@
 *.exe
-*.png
 *.json
 bin/
+good-images/
+mid-images/

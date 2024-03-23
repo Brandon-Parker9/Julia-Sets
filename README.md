@@ -88,3 +88,31 @@ This project includes implementations for generating the Mandelbrot set and Juli
 | 10000 | 10000  | 16              | 47.71285                         | 2.982053                               | 0.000000001                       | \-0.8       | \-0.089          |
 | 10000 | 10000  | 32              | 29.1897                          | 0.9121781                              | 0.000000001                       | \-0.8       | \-0.089          |
 | 10000 | 10000  | 64              | 17.74668                         | 0.2772919                              | 0.000000001                       | \-0.8       | \-0.089          |
+
+
+## Challenges Faced
+
+Throughout the development of the Julia and Mandelbrot set generation program, several challenges were encountered and overcome. Below are some of the notable difficulties we faced:
+
+- **Positioning and Alignment**:  Another challenge arose from ensuring that the Mandelbrot and Julia sets were correctly positioned within the image frame. Incorrect positioning could result in portions of the sets being cropped out or displayed at the wrong location, leading to distorted or incomplete images. To address this, we carefully mapped the pixel coordinates of the sets to the corresponding points in the complex plane, ensuring accurate alignment and placement within the image frame. Additionally, we adjusted the scaling and translation parameters to center the sets within the image and maintain their relative proportions.
+
+- **Memory Management**: One significant issue arose when attempting to store large arrays representing the Mandelbrot and Julia sets in memory. As the size of the dataset increased, memory consumption became a limiting factor, leading to out-of-memory errors and segmentation faults. To mitigate this issue, we adopted a strategy of calculating the sets in smaller, manageable chunks. Instead of trying to store the entire dataset in memory simultaneously, we processed and wrote sections of the sets to file incrementally, thereby reducing the memory footprint and avoiding memory exhaustion.
+
+Certainly, let's incorporate that into the challenges section:
+
+- **Finding Suitable Color Maps**: Selecting an appropriate color map for visualizing the Mandelbrot and Julia sets posed a significant challenge. Aesthetic considerations, such as color harmony, contrast, and perceptual uniformity, were crucial in ensuring that the rendered images were visually appealing and easy to interpret. We experimented with different color schemes, gradients, and palettes to find a balance between aesthetics and functional readability. This iterative process involved evaluating the impact of color choices on the clarity and interoperability of the sets, as well as their overall visual impact.
+
+## Example Images
+
+1. ![Image 1](assets/output_10000x10000_color-1_iterations-1000.png)
+
+2. ![Image 2](assets/output_10000x10000_color-1_iterations-1000_real--0.800000_imaginary-0.156000.png)
+
+3. ![Image 3](assets/output_1000x1000_color-16_iterations-1000_real--0.800000_imaginary--0.177000.png)
+
+4. ![Image 4](assets/output_1000x1000_color-14_iterations-1000_real--0.800000_imaginary--0.098000.png)
+
+5. ![Image 5](assets/output_1000x1000_color-3_iterations-1000_real--0.800000_imaginary--0.156000.png)
+
+6. ![Image 6](assets/output_1000x1000_color-1_iterations-1000_real--0.726990_imaginary-0.188990.png)
+
