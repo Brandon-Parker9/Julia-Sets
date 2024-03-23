@@ -1,5 +1,6 @@
 Your Title Here
----------------
+===============
+
 
 # Julia Set Generation
 
