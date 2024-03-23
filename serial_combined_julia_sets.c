@@ -13,20 +13,28 @@
 #define HEIGHT 1000
 #define MAX_ITERATION 1000
 
+#define REAL_NUMBER -0.8
+#define IMAGINARY_NUMBER -0.156
 
-#define COLOR_CHOICE 1
+// so far 1, 3 are actually kind of nice lolol
+#define COLOR_CHOICE 12
 
-int generate_png(int width, int height, int color_choice);
+typedef struct {
+    double real;
+    double imag;
+} Complex;
+
+int generate_png(int width, int height, int color_choice, double real, double imaginary);
 void map_to_color(int iteration, int *red, int *green, int *blue, int color_choice);
 double hue_to_rgb(double hue, double saturation, double lightness);
 
-int generate_png(int width, int height, int color_choice) {
+int generate_png(int width, int height, int color_choice, double real, double imaginary) {
 
     // Buffer to hold the filename
     char filename[100]; 
 
     // Format the filename with height, width, color choice, and maximum iteration
-    snprintf(filename, sizeof(filename), "output_%dx%d_color-%d_iterations-%d.png", WIDTH, HEIGHT, COLOR_CHOICE, MAX_ITERATION);
+    snprintf(filename, sizeof(filename), "output_%dx%d_color-%d_iterations-%d_real-%f_imaginary-%f.png", width, height, color_choice, MAX_ITERATION, real, imaginary);
 
     // Open file for writing (binary mode)
     FILE *fp = fopen(filename, "wb");
@@ -79,33 +87,26 @@ int generate_png(int width, int height, int color_choice) {
         return 1;
     }
 
-    // Define fractal coordinates and steps
-    double xmin = -2.0, xmax = 1.0, ymin = -1.5, ymax = 1.5;
-    double xstep = (xmax - xmin) / width;
-    double ystep = (ymax - ymin) / height;
     int result;
 
     // Initialize current pixel count
     unsigned long long current_pixel = 0;
 
-    // Fill image data with solid blue color
-    for (int y = 0; y < height; y++) {
+    // Define constant for Julia set
+    Complex constant = {.real = real, .imag = imaginary}; // Example constant
 
-        double y0 = ymin + y * ystep;
-
-        for (int x = 0; x < width; x++) {
-
-            double x0 = xmin + x * xstep;
-            double xx = 0.0, yy = 0.0;
+    // Generate the Julia set and PNG image
+    // Iterate through each pixel and calculate the Julia set value
+    for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
+            Complex z = {.real = x / (double)WIDTH * 3.5 - 1.75, .imag = y / (double)HEIGHT * 2.0 - 1.0};
             int iteration = 0;
-
-            // Perform fractal iteration
-            while (xx * xx + yy * yy <= 4.0 && iteration < MAX_ITERATION) {
-                double xtemp = xx * xx - yy * yy + x0;
-                yy = 2 * xx * yy + y0;
-                xx = xtemp;
+            while (z.real * z.real + z.imag * z.imag <= 4.0 && iteration < MAX_ITERATION) {
+                double temp = z.real * z.real - z.imag * z.imag + constant.real;
+                z.imag = 2.0 * z.real * z.imag + constant.imag;
+                z.real = temp;
                 iteration++;
-            }  
+            }
 
             // Determine color based on iteration count
             if (iteration == MAX_ITERATION) {
@@ -141,7 +142,6 @@ int generate_png(int width, int height, int color_choice) {
 
         // Write current row to PNG
         png_write_row(png_ptr, &image_data[0]);
-
     }
 
     // Print newline after progress percentage  
@@ -323,14 +323,14 @@ double hue_to_rgb(double hue, double saturation, double lightness) {
 }
 
 int main() {
+
     clock_t start_time, end_time;
     double elapsed_time;
 
     // Start measuring time
     start_time = clock();
 
-    // Generate the Mandelbrot set and PNG image
-    generate_png(WIDTH, HEIGHT, COLOR_CHOICE);
+    generate_png(WIDTH, HEIGHT, COLOR_CHOICE, REAL_NUMBER, IMAGINARY_NUMBER);
 
     // Stop measuring time
     end_time = clock();

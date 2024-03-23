@@ -166,6 +166,20 @@ void map_to_color(int iteration, int *red, int *green, int *blue, int color_choi
             *green = (int)(255 * hue_to_rgb(hue - 1.0/3, 0.8, 0.5));
             *blue = (int)(255 * hue_to_rgb(hue - 2.0/3, 0.8, 0.5));
             break;
+        
+        case 11:
+            // Twilight Sky Color Scheme
+            *red = (int)(0 * (1 - t) + 30 * t);
+            *green = (int)(0 * (1 - t) + 0 * t);
+            *blue = (int)(128 * (1 - t) + 128 * t);
+            break;
+
+        case 12: 
+            // Summer Sunset Color Scheme:
+            *red = (int)(255 * (1 - t));
+            *green = (int)(69 * (1 - t) + 128 * t);
+            *blue = (int)(0 * (1 - t) + 128 * t);
+            break;
 
         default:
             // Default to black for unknown color choice
@@ -423,6 +437,7 @@ int main(int argc, char *argv[]) {
         printf("Total computation time: %e seconds\n", elapsed_time);
         printf("Computation time per process: %e seconds\n", elapsed_time / size);
         printf("Resolution of MPI_Wtime: %e seconds\n", tick);
+        printf("%d,%d,%d,%e,%e,%e",WIDTH, HEIGHT, size, elapsed_time, (elapsed_time / size), tick);
     }
 
     return 0;
