@@ -104,15 +104,27 @@ Certainly, let's incorporate that into the challenges section:
 
 ## Example Images
 
-![Image 1](assets/output_10000x10000_color-1_iterations-1000.png){:width="200px" height="auto"}
+<!-- ![Image 1](assets/output_10000x10000_color-1_iterations-1000.png)
 
-![Image 2](assets/output_10000x10000_color-1_iterations-1000_real--0.800000_imaginary-0.156000.png){:width="200px" height="auto"}
+![Image 2](assets/output_10000x10000_color-1_iterations-1000_real--0.800000_imaginary-0.156000.png)
 
-![Image 3](assets/output_1000x1000_color-16_iterations-1000_real--0.800000_imaginary--0.177000.png){:width="200px" height="auto"}
+![Image 3](assets/output_1000x1000_color-16_iterations-1000_real--0.800000_imaginary--0.177000.png)
 
-![Image 4](assets/output_1000x1000_color-14_iterations-1000_real--0.800000_imaginary--0.098000.png){:width="200px" height="auto"}
+![Image 4](assets/output_1000x1000_color-14_iterations-1000_real--0.800000_imaginary--0.098000.png)
 
-![Image 5](assets/output_1000x1000_color-3_iterations-1000_real--0.800000_imaginary--0.156000.png){:width="200px" height="auto"}
+![Image 5](assets/output_1000x1000_color-3_iterations-1000_real--0.800000_imaginary--0.156000.png)
 
-![Image 6](assets/output_1000x1000_color-1_iterations-1000_real--0.726990_imaginary-0.188990.png){:width="200px" height="auto"}
+![Image 6](assets/output_1000x1000_color-1_iterations-1000_real--0.726990_imaginary-0.188990.png) -->
 
+
+<img src="assets/output_10000x10000_color-1_iterations-1000.png" width="200" height="200">
+
+<img src="assets/output_10000x10000_color-1_iterations-1000_real--0.800000_imaginary-0.156000.png" width="200" height="200">
+
+<img src="assets/output_1000x1000_color-16_iterations-1000_real--0.800000_imaginary--0.177000.png" width="200" height="200">
+
+<img src="assets/output_1000x1000_color-14_iterations-1000_real--0.800000_imaginary--0.098000.png" width="200" height="200">
+
+<img src="assets/output_1000x1000_color-3_iterations-1000_real--0.800000_imaginary--0.156000.png" width="200" height="200">
+
+<img src="assets/output_1000x1000_color-1_iterations-1000_real--0.726990_imaginary-0.188990.png" width="200" height="200">
