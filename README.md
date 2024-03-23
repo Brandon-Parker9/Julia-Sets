@@ -98,8 +98,6 @@ Throughout the development of the Julia and Mandelbrot set generation program, s
 
 - **Memory Management**: One significant issue arose when attempting to store large arrays representing the Mandelbrot and Julia sets in memory. As the size of the dataset increased, memory consumption became a limiting factor, leading to out-of-memory errors and segmentation faults. To mitigate this issue, we adopted a strategy of calculating the sets in smaller, manageable chunks. Instead of trying to store the entire dataset in memory simultaneously, we processed and wrote sections of the sets to file incrementally, thereby reducing the memory footprint and avoiding memory exhaustion.
 
-Certainly, let's incorporate that into the challenges section:
-
 - **Finding Suitable Color Maps**: Selecting an appropriate color map for visualizing the Mandelbrot and Julia sets posed a significant challenge. Aesthetic considerations, such as color harmony, contrast, and perceptual uniformity, were crucial in ensuring that the rendered images were visually appealing and easy to interpret. We experimented with different color schemes, gradients, and palettes to find a balance between aesthetics and functional readability. This iterative process involved evaluating the impact of color choices on the clarity and interoperability of the sets, as well as their overall visual impact.
 
 ## Example Images
