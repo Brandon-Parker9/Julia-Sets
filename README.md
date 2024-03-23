@@ -104,15 +104,42 @@ Certainly, let's incorporate that into the challenges section:
 
 ## Example Images
 
-1. ![Image 1](assets/output_10000x10000_color-1_iterations-1000.png)
+<!-- ![Image 1](assets/output_10000x10000_color-1_iterations-1000.png)
 
-2. ![Image 2](assets/output_10000x10000_color-1_iterations-1000_real--0.800000_imaginary-0.156000.png)
+![Image 2](assets/output_10000x10000_color-1_iterations-1000_real--0.800000_imaginary-0.156000.png)
 
-3. ![Image 3](assets/output_1000x1000_color-16_iterations-1000_real--0.800000_imaginary--0.177000.png)
+![Image 3](assets/output_1000x1000_color-16_iterations-1000_real--0.800000_imaginary--0.177000.png)
 
-4. ![Image 4](assets/output_1000x1000_color-14_iterations-1000_real--0.800000_imaginary--0.098000.png)
+![Image 4](assets/output_1000x1000_color-14_iterations-1000_real--0.800000_imaginary--0.098000.png)
 
-5. ![Image 5](assets/output_1000x1000_color-3_iterations-1000_real--0.800000_imaginary--0.156000.png)
+![Image 5](assets/output_1000x1000_color-3_iterations-1000_real--0.800000_imaginary--0.156000.png)
 
-6. ![Image 6](assets/output_1000x1000_color-1_iterations-1000_real--0.726990_imaginary-0.188990.png)
+![Image 6](assets/output_1000x1000_color-1_iterations-1000_real--0.726990_imaginary-0.188990.png) -->
 
+
+<div style="display: flex; flex-wrap: wrap; justify-content: center;">
+    <div style="flex: 0 0 33.33%; padding: 5px;">
+        <img src="assets/output_10000x10000_color-1_iterations-1000.png" alt="Image 1" style="max-width: 100%; height: auto;">
+        <p>Description of Image 1</p>
+    </div>
+    <div style="flex: 0 0 33.33%; padding: 5px;">
+        <img src="assets/output_10000x10000_color-1_iterations-1000_real--0.800000_imaginary-0.156000.png" alt="Image 2" style="max-width: 100%; height: auto;">
+        <p>Description of Image 2</p>
+    </div>
+    <div style="flex: 0 0 33.33%; padding: 5px;">
+        <img src="assets/output_1000x1000_color-16_iterations-1000_real--0.800000_imaginary--0.177000.png" alt="Image 3" style="max-width: 100%; height: auto;">
+        <p>Description of Image 3</p>
+    </div>
+    <div style="flex: 0 0 33.33%; padding: 5px;">
+        <img src="assets/output_1000x1000_color-14_iterations-1000_real--0.800000_imaginary--0.098000.png" alt="Image 4" style="max-width: 100%; height: auto;">
+        <p>Description of Image 4</p>
+    </div>
+    <div style="flex: 0 0 33.33%; padding: 5px;">
+        <img src="assets/output_1000x1000_color-3_iterations-1000_real--0.800000_imaginary--0.156000.png" alt="Image 5" style="max-width: 100%; height: auto;">
+        <p>Description of Image 5</p>
+    </div>
+    <div style="flex: 0 0 33.33%; padding: 5px;">
+        <img src="assets/output_1000x1000_color-1_iterations-1000_real--0.726990_imaginary-0.188990.png" alt="Image 6" style="max-width: 100%; height: auto;">
+        <p>Description of Image 6</p>
+    </div>
+</div>
