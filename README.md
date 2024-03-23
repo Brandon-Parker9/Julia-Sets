@@ -1,7 +1,3 @@
-Your Title Here
-===============
-
-
 # Julia Set Generation
 
 This project includes implementations for generating the Mandelbrot set and Julia sets, two famous fractals in mathematics. The provided files demonstrate how to calculate these sets and visualize them using the PNG image format.
