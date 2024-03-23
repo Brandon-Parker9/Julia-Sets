@@ -295,7 +295,7 @@ int main(int argc, char *argv[]) {
         char filename[100]; // Buffer to hold the filename
 
         // Format the filename with height and width
-        snprintf(filename, sizeof(filename), "output_%dx%d_color-%d_iterations-%d.png", WIDTH, HEIGHT, COLOR_CHOICE, MAX_ITERATION);
+        snprintf(filename, sizeof(filename), "mandelbrot_%dx%d_color-%d_iterations-%d.png", WIDTH, HEIGHT, COLOR_CHOICE, MAX_ITERATION);
 
         // Open file for writing (binary mode)
         FILE *fp = fopen(filename, "wb");

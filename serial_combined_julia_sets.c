@@ -9,12 +9,12 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#define WIDTH 1000
-#define HEIGHT 1000
+#define WIDTH 10000
+#define HEIGHT 10000
 #define MAX_ITERATION 1000
 
-#define REAL_NUMBER -0.72699
-#define IMAGINARY_NUMBER 0.18899
+#define REAL_NUMBER -0.8
+#define IMAGINARY_NUMBER -0.089
 
 // so far 1, 3, 16 are actually kind of nice lolol 
 // 14 are a bit odd 
@@ -35,7 +35,7 @@ int generate_png(int width, int height, int color_choice, double real, double im
     char filename[100]; 
 
     // Format the filename with height, width, color choice, and maximum iteration
-    snprintf(filename, sizeof(filename), "output_%dx%d_color-%d_iterations-%d_real-%f_imaginary-%f.png", width, height, color_choice, MAX_ITERATION, real, imaginary);
+    snprintf(filename, sizeof(filename), "julia-set_%dx%d_color-%d_iterations-%d_real-%f_imaginary-%f.png", width, height, color_choice, MAX_ITERATION, real, imaginary);
 
     // Open file for writing (binary mode)
     FILE *fp = fopen(filename, "wb");

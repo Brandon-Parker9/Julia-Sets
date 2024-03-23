@@ -26,7 +26,7 @@ int generate_png(int width, int height, int color_choice) {
     char filename[100]; 
 
     // Format the filename with height, width, color choice, and maximum iteration
-    snprintf(filename, sizeof(filename), "output_%dx%d_color-%d_iterations-%d.png", WIDTH, HEIGHT, COLOR_CHOICE, MAX_ITERATION);
+    snprintf(filename, sizeof(filename), "mandelbrot_%dx%d_color-%d_iterations-%d.png", WIDTH, HEIGHT, COLOR_CHOICE, MAX_ITERATION);
 
     // Open file for writing (binary mode)
     FILE *fp = fopen(filename, "wb");
