@@ -116,15 +116,26 @@ Certainly, let's incorporate that into the challenges section:
 
 ![Image 6](assets/output_1000x1000_color-1_iterations-1000_real--0.726990_imaginary-0.188990.png) -->
 
+<div style="display: flex; flex-wrap: wrap; gap: 20px;">
+    <div style="flex: 0 0 calc(33.33% - 20px);">
+        <img src="assets/output_10000x10000_color-1_iterations-1000.png" alt="Image 1" style="max-width: 100%; height: auto;">
+    </div>
+    <div style="flex: 0 0 calc(33.33% - 20px);">
+        <img src="assets/output_10000x10000_color-1_iterations-1000_real--0.800000_imaginary-0.156000.png" alt="Image 2" style="max-width: 100%; height: auto;">
+    </div>
+    <div style="flex: 0 0 calc(33.33% - 20px);">
+        <img src="assets/output_1000x1000_color-16_iterations-1000_real--0.800000_imaginary--0.177000.png" alt="Image 3" style="max-width: 100%; height: auto;">
+    </div>
+</div>
 
-<img src="assets/output_10000x10000_color-1_iterations-1000.png" width="200" height="200">
-
-<img src="assets/output_10000x10000_color-1_iterations-1000_real--0.800000_imaginary-0.156000.png" width="200" height="200">
-
-<img src="assets/output_1000x1000_color-16_iterations-1000_real--0.800000_imaginary--0.177000.png" width="200" height="200">
-
-<img src="assets/output_1000x1000_color-14_iterations-1000_real--0.800000_imaginary--0.098000.png" width="200" height="200">
-
-<img src="assets/output_1000x1000_color-3_iterations-1000_real--0.800000_imaginary--0.156000.png" width="200" height="200">
-
-<img src="assets/output_1000x1000_color-1_iterations-1000_real--0.726990_imaginary-0.188990.png" width="200" height="200">
+<div style="display: flex; flex-wrap: wrap; gap: 20px;">
+    <div style="flex: 0 0 calc(33.33% - 20px);">
+        <img src="assets/output_1000x1000_color-14_iterations-1000_real--0.800000_imaginary--0.098000.png" alt="Image 4" style="max-width: 100%; height: auto;">
+    </div>
+    <div style="flex: 0 0 calc(33.33% - 20px);">
+        <img src="assets/output_1000x1000_color-3_iterations-1000_real--0.800000_imaginary--0.156000.png" alt="Image 5" style="max-width: 100%; height: auto;">
+    </div>
+    <div style="flex: 0 0 calc(33.33% - 20px);">
+        <img src="assets/output_1000x1000_color-1_iterations-1000_real--0.726990_imaginary-0.188990.png" alt="Image 6" style="max-width: 100%; height: auto;">
+    </div>
+</div>
