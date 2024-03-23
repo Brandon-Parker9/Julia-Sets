@@ -13,11 +13,12 @@
 #define HEIGHT 1000
 #define MAX_ITERATION 1000
 
-#define REAL_NUMBER -0.8
-#define IMAGINARY_NUMBER -0.156
+#define REAL_NUMBER -0.72699
+#define IMAGINARY_NUMBER 0.18899
 
-// so far 1, 3 are actually kind of nice lolol
-#define COLOR_CHOICE 12
+// so far 1, 3, 16 are actually kind of nice lolol 
+// 14 are a bit odd 
+#define COLOR_CHOICE 1
 
 typedef struct {
     double real;
@@ -99,7 +100,13 @@ int generate_png(int width, int height, int color_choice, double real, double im
     // Iterate through each pixel and calculate the Julia set value
     for (int y = 0; y < HEIGHT; y++) {
         for (int x = 0; x < WIDTH; x++) {
-            Complex z = {.real = x / (double)WIDTH * 3.5 - 1.75, .imag = y / (double)HEIGHT * 2.0 - 1.0};
+
+            // Map pixel coordinates (x, y) directly to the rectangular region in the complex plane
+            // The complex plane is mapped to a rectangular region defined by:
+            // - Real part (x-axis): Range from -1.75 (leftmost) to 1.75 (rightmost)
+            // - Imaginary part (y-axis): Range from -1.75 (bottom) to 1.75 (top)
+            // The width and height of the rectangular region are adjusted to match the aspect ratio of the image.
+            Complex z = {.real = x / (double)WIDTH * 3.5 - 1.75, .imag = y / (double)HEIGHT * 3.5 - 1.75};
             int iteration = 0;
             while (z.real * z.real + z.imag * z.imag <= 4.0 && iteration < MAX_ITERATION) {
                 double temp = z.real * z.real - z.imag * z.imag + constant.real;
@@ -107,6 +114,23 @@ int generate_png(int width, int height, int color_choice, double real, double im
                 z.real = temp;
                 iteration++;
             }
+
+    // for (int y = 0; y < HEIGHT; y++) {
+    //     for (int x = 0; x < WIDTH; x++) {
+    //         // Map pixel coordinates to a circular region in the complex plane
+    //         double radius = sqrt((x - WIDTH / 2.0) * (x - WIDTH / 2.0) + (y - HEIGHT / 2.0) * (y - HEIGHT / 2.0));
+    //         double theta = atan2(y - HEIGHT / 2.0, x - WIDTH / 2.0);
+
+    //         // Convert polar coordinates to Cartesian coordinates
+    //         Complex z = {.real = radius / (double)WIDTH * 3.5, .imag = theta / (double)HEIGHT * 2.0};
+
+    //         int iteration = 0;
+    //         while (z.real * z.real + z.imag * z.imag <= 4.0 && iteration < MAX_ITERATION) {
+    //             double temp = z.real * z.real - z.imag * z.imag + constant.real;
+    //             z.imag = 2.0 * z.real * z.imag + constant.imag;
+    //             z.real = temp;
+    //             iteration++;
+    //         }
 
             // Determine color based on iteration count
             if (iteration == MAX_ITERATION) {
@@ -267,6 +291,191 @@ void map_to_color(int iteration, int *red, int *green, int *blue, int color_choi
             *red = (int)(255 * (1 - t));
             *green = (int)(69 * (1 - t) + 128 * t);
             *blue = (int)(0 * (1 - t) + 128 * t);
+            break;
+        
+        case 13:
+            hue = 6.0 * t;
+            int sector = (int)floor(hue); // Integer part determines color sector
+            double offset = hue - sector;
+
+            switch (sector % 6) {
+                case 0:
+                    *red = 255;
+                    *green = (int)(255 * offset);
+                    *blue = 0;
+                    break;
+                case 1:
+                    *red = (int)(255 * (1 - offset));
+                    *green = 255;
+                    *blue = 0;
+                    break;
+                case 2:
+                    *red = 0;
+                    *green = 255;
+                    *blue = (int)(255 * offset);
+                    break;
+                case 3:
+                    *red = 0;
+                    *green = (int)(255 * (1 - offset));
+                    *blue = 255;
+                    break;
+                case 4:
+                    *red = (int)(255 * offset);
+                    *green = 0;
+                    *blue = 255;
+                    break;
+                case 5:
+                    *red = 255;
+                    *green = 0;
+                    *blue = (int)(255 * (1 - offset));
+                    break;
+            }
+            break;
+
+        case 14:
+            hue = 6.0 * t;
+            *red = (int)(255 * (1 - fabs(4 * hue - 2)) * pow(fabs(4 * hue - 2), 2)); // Emphasize red
+            *green = (int)(255 * fabs(4 * hue - 3) * pow(fabs(4 * hue - 3), 1.5)); // Emphasize green less
+            *blue = (int)(255 * fabs(4 * hue - 4)); // Blue not emphasized
+            break;
+
+        case 15:
+            hue = fmod(t, 1.0); // Wrap hue value between 0 and 1
+            float angle = M_PI * 2.0 * hue;
+            float radius = 1.0;
+
+            *red = (int)(255 * (radius * cos(angle) + 0.5));
+            *green = (int)(255 * (radius * sin(angle) + 0.5));
+            *blue = (int)(255 * (1.0 - radius));
+            break;
+        
+        case 16:
+            hue = 6.0 * t;
+            int sector2 = (int)floor(hue); // Integer part determines color sector
+            double offset2 = hue - sector2;
+
+            switch (sector2 % 6) {
+                case 0:
+                    *red = 255;
+                    *green = (int)(255 * offset2);
+                    *blue = 0;
+                    break;
+                case 1:
+                    *red = (int)(255 * (1 - offset2));
+                    *green = 255;
+                    *blue = 0;
+                    break;
+                case 2:
+                    *red = 0;
+                    *green = 255;
+                    *blue = (int)(255 * offset2);
+                    break;
+                case 3:
+                    *red = 0;
+                    *green = (int)(255 * (1 - offset2));
+                    *blue = 255;
+                    break;
+                case 4:
+                    *red = (int)(255 * offset2);
+                    *green = 0;
+                    *blue = 255;
+                    break;
+                case 5:
+                    *red = 255;
+                    *green = 0;
+                    *blue = (int)(255 * (1 - offset2));
+                    break;
+            }
+
+            // Add secondary inverted rainbow with transparency
+            switch ((sector2 + 3) % 6) {
+                case 0:
+                    *red += (int)(128 * (1 - offset2));
+                    break;
+                case 1:
+                    *green += (int)(128 * (1 - offset2));
+                    break;
+                case 2:
+                    *blue += (int)(128 * (1 - offset2));
+                    break;
+                case 3:
+                    *red += (int)(128 * offset2);
+                    break;
+                case 4:
+                    *green += (int)(128 * offset2);
+                    break;
+                case 5:
+                    *blue += (int)(128 * offset2);
+                    break;
+            }
+            break;
+        
+        case 17:
+
+            double y = t * 2.0 - 1.0; // Normalize and scale y-axis for effect
+            double h1 = fmod(atan2(y, 1.0) / (2.0 * M_PI) + 0.5, 1.0); // Hue for fire
+            double h2 = fmod(atan2(-y, 1.0) / (2.0 * M_PI) + 0.5, 1.0); // Hue for ice
+
+            // Fire colors with smooth transition
+            *red = (int)(255 * (1.0 - h1) * pow(h1, 2));
+            *green = (int)(255 * h1 * pow(h1, 1.5));
+            *blue = 0;
+
+            // Ice colors with smooth transition and transparency
+            *red += (int)(128 * (1.0 - h2) * pow(h2, 3));
+            *green += (int)(128 * h2 * pow(h2, 2));
+            *blue += (int)(255 * h2);
+
+            break;
+
+        case 18:
+            // Spring color scheme:
+            // Starts with light green, transitions to vibrant greens and yellows
+            *red = (int)(150 * (1 - t));
+            *green = (int)(255 * t);
+            *blue = (int)(100 * (1 - t) + 155 * t);
+            break;
+
+        case 19:
+            // Sakura color scheme:
+            // Shades of pink and white, resembling cherry blossom petals
+            *red = (int)(255 * (0.9 + 0.1 * cos(2 * M_PI * t)));
+            *green = (int)(200 * (0.5 + 0.5 * sin(2 * M_PI * t)));
+            *blue = (int)(255 * (0.9 + 0.1 * cos(2 * M_PI * t)));
+            break;
+
+        case 20:
+            // Autumn Leaves color scheme:
+            // Starts with deep orange, transitions to red and brown hues
+            *red = (int)(255 * (0.9 + 0.1 * cos(2 * M_PI * t)));
+            *green = (int)(100 * (0.5 + 0.5 * sin(2 * M_PI * t)));
+            *blue = (int)(0 * (0.9 + 0.1 * cos(2 * M_PI * t)));
+            break;
+
+        case 21:
+            // Mystic Forest color scheme:
+            // Mixture of dark greens and purples, evoking a mysterious atmosphere
+            *red = (int)(30 + 50 * sin(2 * M_PI * t));
+            *green = (int)(80 + 50 * sin(2 * M_PI * t + M_PI / 2));
+            *blue = (int)(100 + 50 * sin(2 * M_PI * t + M_PI));
+            break;
+
+        case 22:
+            // Golden Sunset color scheme:
+            // Starts with warm yellow, transitions to orange and deep red
+            *red = (int)(255 * (0.9 + 0.1 * cos(2 * M_PI * t)));
+            *green = (int)(200 * (0.6 + 0.4 * sin(2 * M_PI * t)));
+            *blue = (int)(50 * (0.5 + 0.5 * sin(2 * M_PI * t)));
+            break;
+
+        case 23:
+            hue = 0.66 * t + 0.16; // Adjust hue range for desired colors
+            *red = (int)(96 * (1 - fabs(4 * hue - 2)) * pow(fabs(4 * hue - 2), 0.5)); // Emphasize red with smooth falloff
+            *green = (int)(144 * (fabs(4 * hue - 3) - fabs(4 * hue - 1)) * pow(fabs(4 * hue - 2.5), 0.75)); // Emphasize green with smoother falloff
+            *blue = (int)(85 * (1 - fabs(2 * hue - 1)) * pow(1.0 - fabs(2 * hue - 1), 1.25)); // Blue fades smoothly to black
+
+            // Adjust falloff power terms and multipliers for finer control
+
             break;
 
         default:
