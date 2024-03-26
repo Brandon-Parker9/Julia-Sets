@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real: -0.8 Imaginary: 0.156</title>
+    <title>Mandelbrot</title>
     <style>
         body {
             margin: 0;
@@ -24,8 +24,8 @@
         }
 
         #openseadragon1 {
-            width: 800px;
-            height: 800px;
+            width: 700px;
+            height: 700px;
             border: 5px solid #333; /* Dark gray border */
             border-radius: 10px; /* Rounded corners */
         }
@@ -47,7 +47,7 @@
 </head>
 <body>
 
-    <h1>Real: -0.8 Imaginary: 0.156</h1>
+    <h1>Mandelbrot</h1>
     <div id="openseadragon1"></div>
 
     <a class="home-button" href="/">Home</a>
@@ -57,7 +57,7 @@
         var viewer = OpenSeadragon({
             id: "openseadragon1",
             prefixUrl: "../node_modules/openseadragon/build/openseadragon/images/",
-            tileSources: "image_real_-0.8_imaginary_0.156.dzi"
+            tileSources: "../dzi_images/mandelbrot/Mandelbrot.dzi"
         });
     </script>
     
