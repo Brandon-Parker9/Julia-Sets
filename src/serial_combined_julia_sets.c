@@ -9,16 +9,16 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#define WIDTH 10000
-#define HEIGHT 10000
+#define WIDTH 1000
+#define HEIGHT 1000
 #define MAX_ITERATION 1000
 
-#define REAL_NUMBER -0.8
-#define IMAGINARY_NUMBER -0.089
+#define REAL_NUMBER -1.0
+#define IMAGINARY_NUMBER 0.0
 
 // so far 1, 3, 16 are actually kind of nice lolol 
 // 14 are a bit odd 
-#define COLOR_CHOICE 1
+#define COLOR_CHOICE 3
 
 typedef struct {
     double real;
@@ -199,7 +199,7 @@ void map_to_color(int iteration, int *red, int *green, int *blue, int color_choi
 
     switch (color_choice) {
         case 1:
-            // Existing smooth gradient scheme (blue to white)
+            // Smooth gradient scheme (blue to white)
             *red = (int)(9 * (1 - t) * t * t * t * 255);
             *green = (int)(15 * (1 - t) * (1 - t) * t * t * 255);
             *blue = (int)(8.5 * (1 - t) * (1 - t) * (1 - t) * t * 255);

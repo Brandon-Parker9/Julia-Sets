@@ -102,14 +102,14 @@ Throughout the development of the Julia and Mandelbrot set generation program, s
 
 ## Example Images
 
-![Image 1](assets/output_10000x10000_color-1_iterations-1000.png)
+![Image 1](github_assets/output_10000x10000_color-1_iterations-1000.png)
 
-![Image 2](assets/output_10000x10000_color-1_iterations-1000_real--0.800000_imaginary-0.156000.png)
+![Image 2](github_assets/output_10000x10000_color-1_iterations-1000_real--0.800000_imaginary-0.156000.png)
 
-![Image 3](assets/output_1000x1000_color-16_iterations-1000_real--0.800000_imaginary--0.177000.png)
+![Image 3](github_assets/output_1000x1000_color-16_iterations-1000_real--0.800000_imaginary--0.177000.png)
 
-![Image 4](assets/output_1000x1000_color-14_iterations-1000_real--0.800000_imaginary--0.098000.png)
+![Image 4](github_assets/output_1000x1000_color-14_iterations-1000_real--0.800000_imaginary--0.098000.png)
 
-![Image 5](assets/output_1000x1000_color-3_iterations-1000_real--0.800000_imaginary--0.156000.png)
+![Image 5](github_assets/output_1000x1000_color-3_iterations-1000_real--0.800000_imaginary--0.156000.png)
 
-![Image 6](assets/output_1000x1000_color-1_iterations-1000_real--0.726990_imaginary-0.188990.png)
+![Image 6](github_assets/output_1000x1000_color-1_iterations-1000_real--0.726990_imaginary-0.188990.png)

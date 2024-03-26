@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Julia Sets</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 600px;
+      margin: 50px auto; /* Center vertically */
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 15px; /* Increased margin between list items */
+    }
+    a {
+      text-decoration: none;
+      color: #333;
+      background-color: #bbb;
+      padding: 15px 40px; /* Increased padding */
+      border-radius: 5px;
+      display: inline-block; /* Added to allow setting width */
+      width: 200px; /* Set button width */
+      height: 200px;
+      transition: background-color 0.3s ease;
+      position: relative; /* Position relative for overlay */
+      overflow: hidden; /* Hide overflow for overlay */
+    }
+    a:hover {
+      background-color: #ddd;
+    }
+    .preview {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.5; /* Adjust opacity as needed */
+      transition: opacity 0.3s ease;
+    }
+    a:hover .preview {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Julia Sets</h1>
+    <ul>
+      <li>
+        <a href="image_real_-0.8_imaginary_0.156/image_real_-0.8_imaginary_0.156.html">
+          <img class="preview" src="/preview_images/image_real_-0.8_imaginary_0.156.jpeg" alt="Preview Image">
+        </a>
+      </li>
+      <li>
+        <a href="image_real_-0.8_imaginary_0.156/image_real_-0.8_imaginary_0.156.html">
+            <img class="preview" src="/preview_images/image_real_-0.8_imaginary_0.156.jpeg" alt="Preview Image">
+          </a>
+      </li>
+      <li>
+        <a href="image_real_-0.8_imaginary_0.156/image_real_-0.8_imaginary_0.156.html">
+            <img class="preview" src="/preview_images/image_real_-0.8_imaginary_0.156.jpeg" alt="Preview Image">
+          </a>
+      </li>
+    </ul>
+  </div>
+</body>
+</html>
