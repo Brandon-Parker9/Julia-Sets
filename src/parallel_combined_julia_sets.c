@@ -79,7 +79,7 @@ void map_to_color(int iteration, int *red, int *green, int *blue, int color_choi
 
     switch (color_choice) {
         case 1:
-            // Existing smooth gradient scheme (blue to white)
+            // Smooth gradient scheme (blue to white)
             *red = (int)(9 * (1 - t) * t * t * t * 255);
             *green = (int)(15 * (1 - t) * (1 - t) * t * t * 255);
             *blue = (int)(8.5 * (1 - t) * (1 - t) * (1 - t) * t * 255);
@@ -158,7 +158,7 @@ void map_to_color(int iteration, int *red, int *green, int *blue, int color_choi
             *green = (int)(255 * hue_to_rgb(hue - 1.0/3, 0.8, 0.5));
             *blue = (int)(255 * hue_to_rgb(hue - 2.0/3, 0.8, 0.5));
             break;
-        
+
         case 11:
             // Twilight Sky Color Scheme
             *red = (int)(0 * (1 - t) + 30 * t);
@@ -172,6 +172,191 @@ void map_to_color(int iteration, int *red, int *green, int *blue, int color_choi
             *green = (int)(69 * (1 - t) + 128 * t);
             *blue = (int)(0 * (1 - t) + 128 * t);
             break;
+        
+        case 13:
+            hue = 6.0 * t;
+            int sector = (int)floor(hue); // Integer part determines color sector
+            double offset = hue - sector;
+
+            switch (sector % 6) {
+                case 0:
+                    *red = 255;
+                    *green = (int)(255 * offset);
+                    *blue = 0;
+                    break;
+                case 1:
+                    *red = (int)(255 * (1 - offset));
+                    *green = 255;
+                    *blue = 0;
+                    break;
+                case 2:
+                    *red = 0;
+                    *green = 255;
+                    *blue = (int)(255 * offset);
+                    break;
+                case 3:
+                    *red = 0;
+                    *green = (int)(255 * (1 - offset));
+                    *blue = 255;
+                    break;
+                case 4:
+                    *red = (int)(255 * offset);
+                    *green = 0;
+                    *blue = 255;
+                    break;
+                case 5:
+                    *red = 255;
+                    *green = 0;
+                    *blue = (int)(255 * (1 - offset));
+                    break;
+            }
+            break;
+
+        case 14:
+            hue = 6.0 * t;
+            *red = (int)(255 * (1 - fabs(4 * hue - 2)) * pow(fabs(4 * hue - 2), 2)); // Emphasize red
+            *green = (int)(255 * fabs(4 * hue - 3) * pow(fabs(4 * hue - 3), 1.5)); // Emphasize green less
+            *blue = (int)(255 * fabs(4 * hue - 4)); // Blue not emphasized
+            break;
+
+        case 15:
+            hue = fmod(t, 1.0); // Wrap hue value between 0 and 1
+            float angle = M_PI * 2.0 * hue;
+            float radius = 1.0;
+
+            *red = (int)(255 * (radius * cos(angle) + 0.5));
+            *green = (int)(255 * (radius * sin(angle) + 0.5));
+            *blue = (int)(255 * (1.0 - radius));
+            break;
+        
+        case 16:
+            hue = 6.0 * t;
+            int sector2 = (int)floor(hue); // Integer part determines color sector
+            double offset2 = hue - sector2;
+
+            switch (sector2 % 6) {
+                case 0:
+                    *red = 255;
+                    *green = (int)(255 * offset2);
+                    *blue = 0;
+                    break;
+                case 1:
+                    *red = (int)(255 * (1 - offset2));
+                    *green = 255;
+                    *blue = 0;
+                    break;
+                case 2:
+                    *red = 0;
+                    *green = 255;
+                    *blue = (int)(255 * offset2);
+                    break;
+                case 3:
+                    *red = 0;
+                    *green = (int)(255 * (1 - offset2));
+                    *blue = 255;
+                    break;
+                case 4:
+                    *red = (int)(255 * offset2);
+                    *green = 0;
+                    *blue = 255;
+                    break;
+                case 5:
+                    *red = 255;
+                    *green = 0;
+                    *blue = (int)(255 * (1 - offset2));
+                    break;
+            }
+
+            // Add secondary inverted rainbow with transparency
+            switch ((sector2 + 3) % 6) {
+                case 0:
+                    *red += (int)(128 * (1 - offset2));
+                    break;
+                case 1:
+                    *green += (int)(128 * (1 - offset2));
+                    break;
+                case 2:
+                    *blue += (int)(128 * (1 - offset2));
+                    break;
+                case 3:
+                    *red += (int)(128 * offset2);
+                    break;
+                case 4:
+                    *green += (int)(128 * offset2);
+                    break;
+                case 5:
+                    *blue += (int)(128 * offset2);
+                    break;
+            }
+            break;
+        
+        case 17:    
+            {
+            double y = t * 2.0 - 1.0; // Normalize and scale y-axis for effect
+            double h1 = fmod(atan2(y, 1.0) / (2.0 * M_PI) + 0.5, 1.0); // Hue for fire
+            double h2 = fmod(atan2(-y, 1.0) / (2.0 * M_PI) + 0.5, 1.0); // Hue for ice
+
+            // Fire colors with smooth transition
+            *red = (int)(255 * (1.0 - h1) * pow(h1, 2));
+            *green = (int)(255 * h1 * pow(h1, 1.5));
+            *blue = 0;
+
+            // Ice colors with smooth transition and transparency
+            *red += (int)(128 * (1.0 - h2) * pow(h2, 3));
+            *green += (int)(128 * h2 * pow(h2, 2));
+            *blue += (int)(255 * h2);
+            }
+            break;
+
+        case 18:
+            // Spring color scheme:
+            // Starts with light green, transitions to vibrant greens and yellows
+            *red = (int)(150 * (1 - t));
+            *green = (int)(255 * t);
+            *blue = (int)(100 * (1 - t) + 155 * t);
+            break;
+
+        case 19:
+            // Sakura color scheme:
+            // Shades of pink and white, resembling cherry blossom petals
+            *red = (int)(255 * (0.9 + 0.1 * cos(2 * M_PI * t)));
+            *green = (int)(200 * (0.5 + 0.5 * sin(2 * M_PI * t)));
+            *blue = (int)(255 * (0.9 + 0.1 * cos(2 * M_PI * t)));
+            break;
+
+        case 20:
+            // Autumn Leaves color scheme:
+            // Starts with deep orange, transitions to red and brown hues
+            *red = (int)(255 * (0.9 + 0.1 * cos(2 * M_PI * t)));
+            *green = (int)(100 * (0.5 + 0.5 * sin(2 * M_PI * t)));
+            *blue = (int)(0 * (0.9 + 0.1 * cos(2 * M_PI * t)));
+            break;
+
+        case 21:
+            // Mystic Forest color scheme:
+            // Mixture of dark greens and purples, evoking a mysterious atmosphere
+            *red = (int)(30 + 50 * sin(2 * M_PI * t));
+            *green = (int)(80 + 50 * sin(2 * M_PI * t + M_PI / 2));
+            *blue = (int)(100 + 50 * sin(2 * M_PI * t + M_PI));
+            break;
+
+        case 22:
+            // Golden Sunset color scheme:
+            // Starts with warm yellow, transitions to orange and deep red
+            *red = (int)(255 * (0.9 + 0.1 * cos(2 * M_PI * t)));
+            *green = (int)(200 * (0.6 + 0.4 * sin(2 * M_PI * t)));
+            *blue = (int)(50 * (0.5 + 0.5 * sin(2 * M_PI * t)));
+            break;
+
+        case 23:
+            hue = 0.66 * t + 0.16; // Adjust hue range for desired colors
+            *red = (int)(96 * (1 - fabs(4 * hue - 2)) * pow(fabs(4 * hue - 2), 0.5)); // Emphasize red with smooth falloff
+            *green = (int)(144 * (fabs(4 * hue - 3) - fabs(4 * hue - 1)) * pow(fabs(4 * hue - 2.5), 0.75)); // Emphasize green with smoother falloff
+            *blue = (int)(85 * (1 - fabs(2 * hue - 1)) * pow(1.0 - fabs(2 * hue - 1), 1.25)); // Blue fades smoothly to black
+
+            // Adjust falloff power terms and multipliers for finer control
+
+            break;
 
         default:
             // Default to black for unknown color choice
@@ -181,20 +366,18 @@ void map_to_color(int iteration, int *red, int *green, int *blue, int color_choi
 }
 
 double hue_to_rgb(double hue, double saturation, double lightness) {
-
-    // Calculate chroma (color intensity) based on lightness and saturation
+    // Calculate chroma (color intensity)
     double chroma = (1 - fabs(2 * lightness - 1)) * saturation;
-    
-    // Modify hue to fit within the range [0, 6) to simplify color mapping
+
+    // Convert hue to hue_mod, which is a value between 0 and 6
     double hue_mod = hue * 6;
-    
-    // Calculate intermediate value 'x' based on chroma and hue
+
+    // Calculate intermediate value x
     double x = chroma * (1 - fabs(fmod(hue_mod, 2) - 1));
-    
-    // Initialize variables for red, green, and blue components
+
     double r, g, b;
-    
-    // Determine RGB values based on the hue value
+
+    // Determine RGB components based on hue_mod
     if (hue_mod < 1) {
         r = chroma;
         g = x;
@@ -221,10 +404,10 @@ double hue_to_rgb(double hue, double saturation, double lightness) {
         b = x;
     }
 
-    // Calculate the 'm' parameter to shift color intensity
+    // Calculate lightness modifier (m)
     double m = lightness - 0.5 * chroma;
-    
-    // Return the final RGB color value
+
+    // Return final RGB value by adding lightness modifier to each RGB component
     return r + m;
 }
 
