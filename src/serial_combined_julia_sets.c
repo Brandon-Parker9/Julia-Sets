@@ -9,16 +9,16 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#define WIDTH 10000
-#define HEIGHT 10000
+#define WIDTH 1000
+#define HEIGHT 1000
 #define MAX_ITERATION 1000
 
-#define REAL_NUMBER -1.0
-#define IMAGINARY_NUMBER 0.0
+#define REAL_NUMBER -0.4692210937499999
+#define IMAGINARY_NUMBER 0.5721248901367187
 
 // so far 1, 3, 16 are actually kind of nice lolol 
 // 14 are a bit odd 
-#define COLOR_CHOICE 3
+#define COLOR_CHOICE 16
 
 typedef struct {
     double real;

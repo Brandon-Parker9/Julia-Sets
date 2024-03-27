@@ -41,3 +41,5 @@ npm install openseadragon
 ### Run npm Server
 
 Start your Node.js server to serve the HTML file along with the OpenSeadragon library and DZI files.
+
+### How to use Current zip Folder Full of Deep Zoom Images

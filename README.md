@@ -113,3 +113,5 @@ Throughout the development of the Julia and Mandelbrot set generation program, s
 ![Image 5](github_assets/output_1000x1000_color-3_iterations-1000_real--0.800000_imaginary--0.156000.png)
 
 ![Image 6](github_assets/output_1000x1000_color-1_iterations-1000_real--0.726990_imaginary-0.188990.png)
+
+![Image 7](github_assets/julia-set_1000x1000_color-16_iterations-1000_real--0.469221_imaginary-0.572125.png)
