@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real: 0.36 Imaginary: 0.1</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0; /* Light gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column; /* Display flex items vertically */
+        }
+
+        h1 {
+            text-align: center;
+            color: #333; /* Dark gray text */
+            margin-bottom: 20px; /* Add space below the title */
+        }
+
+        #openseadragon1 {
+            width: 700px;
+            height: 700px;
+            border: 5px solid #333; /* Dark gray border */
+            border-radius: 10px; /* Rounded corners */
+        }
+
+        .home-button {
+        text-decoration: none;
+        color: #333;
+        background-color: #ddd;
+        padding: 15px 40px; /* Same padding as other buttons */
+        border-radius: 5px;
+        display: inline-block;
+        transition: background-color 0.3s ease;
+        margin: 10px;
+        }
+        .home-button:hover {
+        background-color: #bbb;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Real: 0.36 Imaginary: 0.1</h1>
+    <div id="openseadragon1"></div>
+
+    <a class="home-button" href="/">Home</a>
+
+    <script src="../node_modules/openseadragon/build/openseadragon/openseadragon.min.js"></script>
+    <script type="text/javascript">
+        var viewer = OpenSeadragon({
+            id: "openseadragon1",
+            prefixUrl: "../node_modules/openseadragon/build/openseadragon/images/",
+            tileSources: "../dzi_images/image_real_-0.469221_imaginary_0.572125/image_real_-0.469221_imaginary_0.572125.dzi"
+        });
+    </script>
+    
+</body>
+</html>
