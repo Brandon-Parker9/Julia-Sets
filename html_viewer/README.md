@@ -49,4 +49,4 @@ Start your Node.js server to serve the HTML file along with the OpenSeadragon li
 
 2. **Folder Structure Example**: Here is an example of how your folder structure should look after extracting the zip folder:
 
-![Folder Structure](github_assets/html_viewer_file_structure.jpg)
+![Folder Structure](../github_assets/html_viewer_file_structure.jpg)
