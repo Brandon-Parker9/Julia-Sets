@@ -43,3 +43,10 @@ npm install openseadragon
 Start your Node.js server to serve the HTML file along with the OpenSeadragon library and DZI files.
 
 ### How to use Current zip Folder Full of Deep Zoom Images
+
+
+1. **Download and Extract the Zip Folder**: Go [here](https://drive.google.com/file/d/1FKME-I9dDG1xW4eVcQjUGCzXnOnn8rtl/view?usp=sharing) to download the zip folder containing the Deep Zoom Images. Use the tool 7zip to extract the contents.
+
+2. **Folder Structure Example**: Here is an example of how your folder structure should look after extracting the zip folder:
+
+![Folder Structure](github_assets/html_viewer_file_structure.jpg)
