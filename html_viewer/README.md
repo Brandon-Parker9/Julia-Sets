@@ -14,9 +14,9 @@ vips dzsave <input-filename> <output-name>
 
 Copy the `.dzi` file and `<output-name>` folder (which contains the images) to your HTML directory.
 
-### Install npm (Node.js Package Manager)
+### Install Node.js
 
-Download and install npm from [the official website](https://www.npmjs.com/get-npm).
+Download and install Node.js from [the official website](https://nodejs.org/en).
 
 ### Install OpenSeadragon Package
 
