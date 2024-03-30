@@ -100,6 +100,31 @@ Throughout the development of the Julia and Mandelbrot set generation program, s
 
 - **Finding Suitable Color Maps**: Selecting an appropriate color map for visualizing the Mandelbrot and Julia sets posed a significant challenge. Aesthetic considerations, such as color harmony, contrast, and perceptual uniformity, were crucial in ensuring that the rendered images were visually appealing and easy to interpret. We experimented with different color schemes, gradients, and palettes to find a balance between aesthetics and functional readability. This iterative process involved evaluating the impact of color choices on the clarity and interoperability of the sets, as well as their overall visual impact.
 
+Sure, here's a general overview of the HTML viewer with Node.js server and OpenSeadragon:
+
+## HTML Viewer with Node.js Server and OpenSeadragon
+
+The HTML viewer with Node.js and OpenSeadragon is a simple web-based application designed to visualize the large images. It leverages the OpenSeadragon library, which specializes in viewing and navigating large images with deep zoom capabilities.
+
+### Components:
+
+1. **Node.js Server**:
+   - The Node.js server serves the HTML viewer page along with necessary resources like the OpenSeadragon library and Deep Zoom Image (DZI) files.
+   - It handles requests from clients and serves the appropriate content.
+
+2. **OpenSeadragon Library**:
+   - OpenSeadragon is a JavaScript library that enables viewing and navigating large images with deep zoom capabilities.
+   - It provides functionalities for displaying high-resolution images, panning, zooming, and navigating through image tiles efficiently.
+
+3. **Deep Zoom Image (DZI) Files**:
+   - DZI files are a collection of image tiles at multiple resolutions, allowing for smooth navigation and zooming without loading the entire image at once.
+   - These files are generated from large images using tools like VIPS (in this case) and provide the data necessary for OpenSeadragon to display the image effectively.
+
+### Benefits:
+
+  - **Efficient Image Viewing**: OpenSeadragon efficiently loads and displays large images by using tiled Deep Zoom Image formats, enabling smooth navigation and zooming even with high-resolution images.
+  - **Scalability**: The viewer can handle images of various sizes and resolutions, making it suitable for visualizing a wide range of fractal images and other large datasets.
+
 ## Example Images
 
 ![Image 1](github_assets/output_10000x10000_color-1_iterations-1000.png)
