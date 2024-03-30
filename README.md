@@ -100,8 +100,6 @@ Throughout the development of the Julia and Mandelbrot set generation program, s
 
 - **Finding Suitable Color Maps**: Selecting an appropriate color map for visualizing the Mandelbrot and Julia sets posed a significant challenge. Aesthetic considerations, such as color harmony, contrast, and perceptual uniformity, were crucial in ensuring that the rendered images were visually appealing and easy to interpret. We experimented with different color schemes, gradients, and palettes to find a balance between aesthetics and functional readability. This iterative process involved evaluating the impact of color choices on the clarity and interoperability of the sets, as well as their overall visual impact.
 
-Sure, here's a general overview of the HTML viewer with Node.js server and OpenSeadragon:
-
 ## HTML Viewer with Node.js Server and OpenSeadragon
 
 The HTML viewer with Node.js and OpenSeadragon is a simple web-based application designed to visualize the large images. It leverages the OpenSeadragon library, which specializes in viewing and navigating large images with deep zoom capabilities.
