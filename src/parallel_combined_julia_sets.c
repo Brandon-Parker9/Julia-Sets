@@ -10,16 +10,16 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#define WIDTH 100
-#define HEIGHT 100
+#define WIDTH 10000
+#define HEIGHT 10000
 #define MAX_ITERATION 1000
 
-#define REAL_NUMBER -0.8
-#define IMAGINARY_NUMBER -0.089
+#define REAL_NUMBER -0.726990
+#define IMAGINARY_NUMBER 0.188990
 
 // so far 1, 3, 16 are actually kind of nice lolol 
 // 14 are a bit odd 
-#define COLOR_CHOICE 1
+#define COLOR_CHOICE 16
 
 typedef struct {
     double real;
@@ -56,9 +56,9 @@ void calculate_julia_array_range(int width, int start_row, int end_row, int *res
 
             // Store the result in the result array based on the iteration count
             if (iteration == MAX_ITERATION) {
-                result[(y - start_row) * width + x] = 0;  // Inside Mandelbrot set
+                result[(y - start_row) * width + x] = 0;  // Inside julia set
             } else {
-                result[(y - start_row) * width + x] = iteration;  // Outside Mandelbrot set
+                result[(y - start_row) * width + x] = iteration;  // Outside julia set
             }
         }
     }
@@ -446,7 +446,7 @@ int main(int argc, char *argv[]) {
 
     int local_total_elements = WIDTH * (end_row - start_row);
 
-     // Allocate memory for local Mandelbrot sets on each process
+     // Allocate memory for local julia sets on each process
     int *local_julia_set;
     local_julia_set = malloc(sizeof(int) * local_total_elements);
     if (local_julia_set == NULL) {
@@ -455,7 +455,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // Generate the Mandelbrot set
+    // Generate the julia set
     calculate_julia_array_range(WIDTH, start_row, end_row, local_julia_set, REAL_NUMBER, IMAGINARY_NUMBER);
 
     // Send and Receive local results (instead of Gather)
