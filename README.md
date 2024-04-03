@@ -125,6 +125,10 @@ The HTML viewer with Node.js and OpenSeadragon is a simple web-based application
 
 ## Example Images
 
+### High-Resolution Images
+
+You can find high-resolution versions of some of the images below [here](https://drive.google.com/drive/folders/1FKlG3E5jROSM8AJPGPxJeGBlu5ss_mqI?usp=sharing).
+
 ![Image 1](github_assets/output_10000x10000_color-1_iterations-1000.png)
 
 ![Image 2](github_assets/output_10000x10000_color-1_iterations-1000_real--0.800000_imaginary-0.156000.png)
